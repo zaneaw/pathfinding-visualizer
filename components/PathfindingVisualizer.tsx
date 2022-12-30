@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Toolbar from './Toolbar';
 import RowDisplay from './RowDisplay';
+import { start } from 'repl';
 
 interface Node {
     y: number,
@@ -10,8 +11,8 @@ interface Node {
 const PathfindingVisualizer: React.FC = () => {
     const [grid, setGrid] = useState<Node[][]>([]);
     const [isSelected, setIsSelected] = useState<string>('');
-    const [startNode, setStartNode] = useState<Node>();
-    const [endNode, setEndNode] = useState<Node>();
+    const [startNode, setStartNode] = useState<Node>({y: 5, x: 5});
+    const [endNode, setEndNode] = useState<Node>({y: 15, x: 45});
     const [wallNodes, setWallNodes] = useState<Node[]>([])
 
     const toggleSelected = (button: string) => {
@@ -24,6 +25,7 @@ const PathfindingVisualizer: React.FC = () => {
 
     const clickNode = (coordinates: Node) => {
         if (isSelected === 'start') {
+            console.log(coordinates)
             setStartNode(coordinates);
         } else if (isSelected === 'end') {
             setEndNode(coordinates)
@@ -33,6 +35,8 @@ const PathfindingVisualizer: React.FC = () => {
             console.log('Clicked: ', coordinates);
         };
     };
+
+    console.log(wallNodes);
 
     useEffect(() => {
         const rows: Node[][] = [];
@@ -61,6 +65,9 @@ const PathfindingVisualizer: React.FC = () => {
                             row={row}
                             top={row[0].y === 0}
                             bottom={row[0].y === grid.length - 1}
+                            startNode={startNode}
+                            endNode={endNode}
+                            wallNodes={wallNodes}
                         />             
                     )
                 })}

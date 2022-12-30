@@ -12,10 +12,12 @@ interface Props {
     row: Node[],
     top: boolean,
     bottom: boolean,
+    startNode: Node,
+    endNode: Node,
+    wallNodes: Node[],
 }
 
-
-const RowDisplay: React.FC<Props> = ({ clickNode, row, top, bottom }) => {
+const RowDisplay: React.FC<Props> = ({ clickNode, row, top, bottom, startNode, endNode, wallNodes }) => {
     return (
         <div className="flex flex-row border-black">
             {row.map((node) => {
@@ -28,6 +30,9 @@ const RowDisplay: React.FC<Props> = ({ clickNode, row, top, bottom }) => {
                         left={node.x === 0}
                         right={node.x === row.length - 1}
                         coordinates={node}
+                        startNode={startNode}
+                        endNode={endNode}
+                        wallNodes={wallNodes}
                     />
                 )
             })}
