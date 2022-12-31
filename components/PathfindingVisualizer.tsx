@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import Toolbar from './Toolbar';
-import RowDisplay from './RowDisplay';
-import { start } from 'repl';
+import NodeDisplay from './NodeDisplay';
 
 interface Node {
-    y: number,
-    x: number,
+    col: number;
+    row: number;
+    isStart: boolean;
+    isEnd: boolean;
+    isWall: boolean;
 }
 
 const PathfindingVisualizer: React.FC = () => {
-    const [grid, setGrid] = useState<Node[][]>([]);
+    const [nodes, setNodes] = useState<Node[][]>([]);
     const [isSelected, setIsSelected] = useState<string>('');
-    const [startNode, setStartNode] = useState<Node>({y: 5, x: 5});
-    const [endNode, setEndNode] = useState<Node>({y: 15, x: 45});
-    const [wallNodes, setWallNodes] = useState<Node[]>([])
 
     const toggleSelected = (button: string) => {
         if (isSelected === button) {
@@ -23,58 +22,90 @@ const PathfindingVisualizer: React.FC = () => {
         };
     };
 
-    const clickNode = (coordinates: Node) => {
-        if (isSelected === 'start') {
-            console.log(coordinates)
-            setStartNode(coordinates);
-        } else if (isSelected === 'end') {
-            setEndNode(coordinates)
-        } else if (isSelected === 'wall') {
-            setWallNodes([...wallNodes, coordinates])
-        } else {
-            console.log('Clicked: ', coordinates);
-        };
-    };
+    const clickNode = (currNode: Node) => {
+        const varName: keyof Node = isSelected === 'start' 
+            ? 'isStart' 
+            : isSelected === 'end'
+            ? 'isEnd'
+            : 'isWall';
 
-    console.log(wallNodes);
+        const nextNodes = nodes.map(row => {
+            row.map(node => {
+                if (varName !== 'isWall') {
+                    if ((currNode.col === node.col && currNode.row === node.row && !node[varName]) || node[varName]) {
+                        node[varName] = !node[varName];
+                        return {...node};
+                    }
+                } else {
+                    if (currNode.col === node.col && currNode.row === node.row) {
+                        node[varName] = !node[varName];
+                        return {...node};
+                    }
+                }
+                return node;
+            })
+            return [...row];
+        })
+
+        setNodes(nextNodes);
+    };
 
     useEffect(() => {
         const rows: Node[][] = [];
-    
+
         for (let y = 0; y < 20; y++) {
             let currRow: Node[] = [];
 
-            for (let x = 0; x < 50; x++) {
-                currRow.push({ y, x })
+            for (let x = 0; x < 20; x++) {
+                currRow.push({
+                    col: y,
+                    row: x,
+                    isStart: y === 0 && x === 0 ? true : false,
+                    isEnd: y === 1 && x === 1 ? true : false,
+                    isWall: false,
+                });
             }
             rows.push(currRow);
         }
 
-        setGrid(rows);
-    }, [])
-    
+        setNodes(rows);
+    }, []);
+
     return (
         <div className='h-screen bg-[cornflowerblue]'>
             <Toolbar isSelected={isSelected} toggleSelected={toggleSelected} />
             <div className='flex flex-col items-center justify-center'>
-                {grid.map((row: Node[], i) => {
+                {nodes.map((row: Node[], i: number) => {
+                    const topBorder = row[0].col === 0 ? true : false;
+                    const botBorder =
+                        row[0].col === nodes.length - 1 ? true : false;
                     return (
-                        <RowDisplay 
+                        <div
                             key={i}
-                            clickNode={clickNode}
-                            row={row}
-                            top={row[0].y === 0}
-                            bottom={row[0].y === grid.length - 1}
-                            startNode={startNode}
-                            endNode={endNode}
-                            wallNodes={wallNodes}
-                        />             
-                    )
+                            className='flex flex-row items-center justify-center'
+                        >
+                            {row.map((node: Node, j: number) => {
+                                const leftBorder = node.row === 0 ? true : false;
+                                const rightBorder =
+                                    node.row === row.length - 1 ? true : false;
+                                return (
+                                    <NodeDisplay
+                                        key={Number(String(i) + String(j))}
+                                        node={node}
+                                        clickNode={clickNode}
+                                        topBorder={topBorder}
+                                        botBorder={botBorder}
+                                        leftBorder={leftBorder}
+                                        rightBorder={rightBorder}
+                                    />
+                                );
+                            })}
+                        </div>
+                    );
                 })}
             </div>
         </div>
-    )
-}
-
+    );
+};
 
 export default PathfindingVisualizer;

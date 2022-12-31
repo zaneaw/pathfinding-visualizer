@@ -1,43 +1,42 @@
-import React, { useState } from 'react';
-import { FiMapPin } from "react-icons/fi";
-import { GiFinishLine, GiStoneWall } from "react-icons/gi";
+import React from 'react';
 
 interface Node {
-    y: number,
-    x: number,
+    col: number;
+    row: number;
+    isStart: boolean;
+    isEnd: boolean;
+    isWall: boolean;
 }
 
 interface Props {
-    clickNode: (coordinates: Node) => void,
-    top: boolean,
-    bottom: boolean,
-    left: boolean,
-    right: boolean,
-    coordinates: Node,
-    startNode: Node,
-    endNode: Node,
-    wallNodes: Node[],
+    node: Node;
+    clickNode: () => void;
+    topBorder: boolean;
+    botBorder: boolean;
+    leftBorder: boolean;
+    rightBorder: boolean;
 }
 
-
-const NodeDisplay: React.FC<Props> = ({ clickNode, top, bottom, left, right, coordinates, startNode, endNode, wallNodes }) => {
+const NodeDisplay: React.FC<Props> = ({
+    node,
+    clickNode,
+    topBorder,
+    botBorder,
+    leftBorder,
+    rightBorder,
+}) => {
     return (
-        <div onClick={() => clickNode({y: coordinates.y, x: coordinates.x})}
-            className={`w-4 h-4 flex items-center justify-center border-[1px] border-black hover:bg-red-500
-                ${top ? 'border-t-2' : ''} ${bottom ? 'border-b-2' : ''}
-                ${left ? 'border-l-2' : ''} ${right ? 'border-r-2' : ''}
-                `}
-                
-        >
-            {startNode.x === coordinates.x && startNode.y === coordinates.y
-                ? <FiMapPin />
-                : endNode.x === coordinates.x && endNode.y === coordinates.y
-                ? <GiFinishLine />
-                : ''
-            }
-        </div>
+        <div onClick={() => clickNode(node)}
+            className={`w-6 h-6 border-[1px] border-black ${
+                topBorder ? 'border-t-2' : ''
+            } ${botBorder ? 'border-b-2' : ''} ${
+                leftBorder ? 'border-l-2' : ''
+            } ${rightBorder ? 'border-r-2' : ''}
+            ${node.isStart ? 'bg-green-500' : ''}
+            ${node.isEnd ? 'bg-red-500' : ''}
+            ${node.isWall ? 'bg-gray-500' : ''}`}
+        ></div>
     );
-}
-
+};
 
 export default NodeDisplay;
