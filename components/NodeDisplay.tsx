@@ -10,7 +10,9 @@ interface Node {
 
 interface Props {
     node: Node;
-    clickNode: () => void;
+    handleMouseDown: (node: Node) => void;
+    handleMouseEnter: (node: Node) => void;
+    handleMouseUp: () => void;
     topBorder: boolean;
     botBorder: boolean;
     leftBorder: boolean;
@@ -19,14 +21,19 @@ interface Props {
 
 const NodeDisplay: React.FC<Props> = ({
     node,
-    clickNode,
+    handleMouseDown,
+    handleMouseEnter,
+    handleMouseUp,
     topBorder,
     botBorder,
     leftBorder,
     rightBorder,
 }) => {
     return (
-        <div onClick={() => clickNode(node)}
+        <div
+            onMouseDown={() => handleMouseDown(node)}
+            onMouseEnter={() => handleMouseEnter(node)}
+            onMouseUp={() => handleMouseUp()}
             className={`w-6 h-6 border-[1px] border-black ${
                 topBorder ? 'border-t-2' : ''
             } ${botBorder ? 'border-b-2' : ''} ${

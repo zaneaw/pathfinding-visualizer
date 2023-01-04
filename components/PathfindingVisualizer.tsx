@@ -13,6 +13,23 @@ interface Node {
 const PathfindingVisualizer: React.FC = () => {
     const [nodes, setNodes] = useState<Node[][]>([]);
     const [isSelected, setIsSelected] = useState<string>('');
+    const [isMouseDown, setIsMouseDown] = useState(false);
+
+    const handleMouseDown = (currNode: Node) => {
+        setIsMouseDown(true);
+        handleMouseEnter(currNode, true);
+    }
+
+    const handleMouseEnter = (currNode: Node, first?: boolean) => {
+        if (!isMouseDown && !first) {
+            return;
+        }
+        clickNode(currNode);
+    }
+
+    const handleMouseUp = () => {
+        setIsMouseDown(false);
+    }
 
     const toggleSelected = (button: string) => {
         if (isSelected === button) {
@@ -23,17 +40,26 @@ const PathfindingVisualizer: React.FC = () => {
     };
 
     const clickNode = (currNode: Node) => {
+        if (!isSelected) {
+            return;
+        }
+
         const varName: keyof Node = isSelected === 'start' 
             ? 'isStart' 
             : isSelected === 'end'
             ? 'isEnd'
             : 'isWall';
 
+        if (varName !== 'isWall' && (currNode.isStart || currNode.isEnd)) {
+            return;
+        }
+
         const nextNodes = nodes.map(row => {
             row.map(node => {
                 if (varName !== 'isWall') {
                     if ((currNode.col === node.col && currNode.row === node.row && !node[varName]) || node[varName]) {
                         node[varName] = !node[varName];
+                        node.isWall = false;
                         return {...node};
                     }
                 } else {
@@ -92,7 +118,9 @@ const PathfindingVisualizer: React.FC = () => {
                                     <NodeDisplay
                                         key={Number(String(i) + String(j))}
                                         node={node}
-                                        clickNode={clickNode}
+                                        handleMouseDown={handleMouseDown}
+                                        handleMouseEnter={handleMouseEnter}
+                                        handleMouseUp={handleMouseUp}
                                         topBorder={topBorder}
                                         botBorder={botBorder}
                                         leftBorder={leftBorder}
