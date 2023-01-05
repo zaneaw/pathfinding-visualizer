@@ -53,8 +53,18 @@ const Toolbar: React.FC<Props> = ({
                 </div>
             </div>
             <div className='flex flex-row items-center justify-around gap-4 mb-4 pt-4'>
-                <div onClick={() => startAlgo()} className={`py-1 w-40 text-center rounded border-2 border-slate-500 hover:bg-slate-500 hover:cursor-pointer`}>Run Algorithm</div>
-                <div onClick={() => resetGrid()} className={`py-1 w-40 text-center rounded border-2 border-slate-500 hover:bg-slate-500 hover:cursor-pointer`}>Reset Grid</div>
+                <div
+                    onClick={() => startAlgo()}
+                    className={`py-1 w-40 text-center rounded border-2 border-slate-500 hover:bg-slate-500 hover:cursor-pointer`}
+                >
+                    Run Algorithm
+                </div>
+                <div
+                    onClick={() => resetGrid()}
+                    className={`py-1 w-40 text-center rounded border-2 border-slate-500 hover:bg-slate-500 hover:cursor-pointer`}
+                >
+                    Reset Grid
+                </div>
             </div>
         </div>
     );
