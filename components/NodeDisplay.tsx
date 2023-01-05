@@ -1,6 +1,9 @@
 import React from 'react';
+import { FiMapPin } from 'react-icons/fi';
+import { GiFinishLine, GiStoneWall } from 'react-icons/gi';
 
 interface Node {
+    id: number;
     col: number;
     row: number;
     isStart: boolean;
@@ -20,6 +23,7 @@ interface Props {
     botBorder: boolean;
     leftBorder: boolean;
     rightBorder: boolean;
+    addToRefs: (el: HTMLDivElement) => void;
 }
 
 const NodeDisplay: React.FC<Props> = ({
@@ -31,13 +35,16 @@ const NodeDisplay: React.FC<Props> = ({
     botBorder,
     leftBorder,
     rightBorder,
+    addToRefs,
 }) => {
     return (
         <div
+            id={String(node.id)}
+            ref={addToRefs}
             onMouseDown={() => handleMouseDown(node)}
             onMouseEnter={() => handleMouseEnter(node)}
             onMouseUp={() => handleMouseUp()}
-            className={`w-6 h-6 border-[1px] border-black ${
+            className={`w-6 h-6 flex justify-center items-center border-[1px] border-black ${
                 topBorder ? 'border-t-2' : ''
             } ${botBorder ? 'border-b-2' : ''} ${
                 leftBorder ? 'border-l-2' : ''
@@ -45,7 +52,15 @@ const NodeDisplay: React.FC<Props> = ({
             ${node.isStart ? 'bg-green-500' : ''}
             ${node.isEnd ? 'bg-red-500' : ''}
             ${node.isWall ? 'bg-gray-500' : ''}`}
-        ></div>
+        >
+            {node.isStart 
+                ? <FiMapPin />
+                : node.isEnd
+                ? <GiFinishLine />
+                : node.isWall
+                ? <GiStoneWall />
+                : ''}
+        </div>
     );
 };
 
