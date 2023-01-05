@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TopToolbar from './TopToolbar';
 import NodeDisplay from './NodeDisplay';
+import { dijkstras, getNodesInShortestPath } from '../algorithms/dijkstras';
 
 interface Node {
+    id: number;
     col: number;
     row: number;
     isStart: boolean;
@@ -17,6 +19,7 @@ const PathfindingVisualizer: React.FC = () => {
     const [nodes, setNodes] = useState<Node[][]>([]);
     const [isSelected, setIsSelected] = useState<string>('');
     const [isMouseDown, setIsMouseDown] = useState(false);
+    const nodesRef = useRef<HTMLDivElement[]>(new Array());
 
     // Selector for toolbar
     const toggleSelected = (button: string): void => {
@@ -27,9 +30,47 @@ const PathfindingVisualizer: React.FC = () => {
         }
     };
 
+    const animateDijkstra = (visitedNodes: Node[], nodesInShortestPath: Node[]) => {
+        for (let i = 0; i <= visitedNodes.length; i++) {
+            if (i === visitedNodes.length) {
+                setTimeout(() => {
+                    animateShortestPath(nodesInShortestPath);
+                }, 10 * i);
+                return;
+            }
+            setTimeout(() => {
+                const node = visitedNodes[i];
+                const nodeId = String(node.id);
+                nodesRef.current.map(nodeElement => {
+                    if (nodeElement.id === nodeId && !node.isStart && !node.isEnd) {
+                        nodeElement.className += ' bg-purple-500'                        
+                    }
+                })
+                
+            }, 10 * i);
+        }
+    }
+
+    const animateShortestPath = (nodesInShortestPath: Node[]) => {
+        for (let i = 0; i < nodesInShortestPath.length; i++) {
+            setTimeout(() => {
+                const node = nodesInShortestPath[i];
+                const nodeId = String(node.id);
+                nodesRef.current.map(nodeElement => {
+                    if (nodeElement.id === nodeId && !node.isStart && !node.isEnd) {
+                        nodeElement.className = 'w-6 h-6 flex justify-center items-center border-[1px] border-black bg-yellow-500'                        
+                    }
+                })
+            }, 50 * i);
+        } 
+    }
+
     // Start Algo
     const startAlgo = (): void => {
         // run the algorithm
+        const [visitedNodes, startNode, endNode]: [Node[], Node, Node] = dijkstras(nodes);
+        const nodesInShortestPath = getNodesInShortestPath(endNode);
+        animateDijkstra(visitedNodes, nodesInShortestPath);
     };
 
     // Reset Grid
@@ -103,22 +144,25 @@ const PathfindingVisualizer: React.FC = () => {
     // Create / Reset Grid
     const createGrid = () => {
         const rows: Node[][] = [];
+        let i = Math.floor(Math.random() * 1000);
 
         for (let y = 0; y < 20; y++) {
             let currRow: Node[] = [];
 
-            for (let x = 0; x < 20; x++) {
+            for (let x = 0; x < 50; x++) {
                 currRow.push({
-                    // create each node
-                    col: y,
-                    row: x,
-                    isStart: y === 0 && x === 0 ? true : false,
-                    isEnd: y === 1 && x === 1 ? true : false,
+                    id: i,
+                    col: x,
+                    row: y,
+                    isStart: y === 8 && x === 10 ? true : false,
+                    isEnd: y === 12 && x === 35 ? true : false,
                     isWall: false,
                     isVisited: false,
                     distance: Infinity,
                     prevNode: null,
                 });
+
+                i++;
             }
 
             rows.push(currRow);
@@ -126,6 +170,12 @@ const PathfindingVisualizer: React.FC = () => {
 
         setNodes(rows);
     };
+
+    const addToRefs = (el: HTMLDivElement) => {
+        if (el && !nodesRef.current.includes(el)) {
+            nodesRef.current.push(el);
+        }
+    }
 
     useEffect(() => {
         createGrid();
@@ -142,22 +192,19 @@ const PathfindingVisualizer: React.FC = () => {
             <div className='flex flex-col items-center justify-center'>
                 {/* Create grid display on page */}
                 {nodes.map((row: Node[], i: number) => {
-                    const topBorder = row[0].col === 0 ? true : false;
-                    const botBorder =
-                        row[0].col === nodes.length - 1 ? true : false;
+                    const topBorder = row[0].row === 0 ? true : false;
+                    const botBorder = row[0].row === nodes.length - 1 ? true : false;
                     return (
                         <div
                             key={i}
                             className='flex flex-row items-center justify-center'
                         >
-                            {row.map((node: Node, j: number) => {
-                                const leftBorder =
-                                    node.row === 0 ? true : false;
-                                const rightBorder =
-                                    node.row === row.length - 1 ? true : false;
+                            {row.map((node: Node) => {
+                                const leftBorder = node.col === 0 ? true : false;
+                                const rightBorder = node.col === row.length - 1 ? true : false;
                                 return (
                                     <NodeDisplay
-                                        key={Number(String(i) + String(j))}
+                                        key={node.id}
                                         node={node}
                                         handleMouseDown={handleMouseDown}
                                         handleMouseEnter={handleMouseEnter}
@@ -166,6 +213,7 @@ const PathfindingVisualizer: React.FC = () => {
                                         botBorder={botBorder}
                                         leftBorder={leftBorder}
                                         rightBorder={rightBorder}
+                                        addToRefs={addToRefs}
                                     />
                                 );
                             })}
