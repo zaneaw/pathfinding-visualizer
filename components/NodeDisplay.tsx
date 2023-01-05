@@ -6,6 +6,9 @@ interface Node {
     isStart: boolean;
     isEnd: boolean;
     isWall: boolean;
+    isVisited: boolean;
+    distance: number;
+    prevNode: Node | null;
 }
 
 interface Props {

@@ -8,6 +8,9 @@ interface Node {
     isStart: boolean;
     isEnd: boolean;
     isWall: boolean;
+    isVisited: boolean;
+    distance: number;
+    prevNode: Node | null;
 }
 
 const PathfindingVisualizer: React.FC = () => {
@@ -89,8 +92,12 @@ const PathfindingVisualizer: React.FC = () => {
                     isStart: y === 0 && x === 0 ? true : false,
                     isEnd: y === 1 && x === 1 ? true : false,
                     isWall: false,
+                    isVisited: false,
+                    distance: Infinity,
+                    prevNode: null,
                 });
             }
+
             rows.push(currRow);
         }
 
@@ -112,8 +119,7 @@ const PathfindingVisualizer: React.FC = () => {
                         >
                             {row.map((node: Node, j: number) => {
                                 const leftBorder = node.row === 0 ? true : false;
-                                const rightBorder =
-                                    node.row === row.length - 1 ? true : false;
+                                const rightBorder = node.row === row.length - 1 ? true : false;
                                 return (
                                     <NodeDisplay
                                         key={Number(String(i) + String(j))}
