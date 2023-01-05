@@ -18,13 +18,23 @@ const PathfindingVisualizer: React.FC = () => {
     const [isSelected, setIsSelected] = useState<string>('');
     const [isMouseDown, setIsMouseDown] = useState(false);
 
+    // Selector for toolbar
+    const toggleSelected = (button: string) => {
+        if (isSelected === button) {
+            setIsSelected('');
+        } else {
+            setIsSelected(button);
+        };
+    };
+
+    // Mouse events
     const handleMouseDown = (currNode: Node) => {
         setIsMouseDown(true);
-        handleMouseEnter(currNode, true);
+        clickNode(currNode);
     }
 
-    const handleMouseEnter = (currNode: Node, first?: boolean) => {
-        if (!isMouseDown && !first) {
+    const handleMouseEnter = (currNode: Node) => {
+        if (!isMouseDown) {
             return;
         }
         clickNode(currNode);
@@ -33,14 +43,6 @@ const PathfindingVisualizer: React.FC = () => {
     const handleMouseUp = () => {
         setIsMouseDown(false);
     }
-
-    const toggleSelected = (button: string) => {
-        if (isSelected === button) {
-            setIsSelected('');
-        } else {
-            setIsSelected(button);
-        };
-    };
 
     const clickNode = (currNode: Node) => {
         if (!isSelected) {
@@ -79,6 +81,7 @@ const PathfindingVisualizer: React.FC = () => {
         setNodes(nextNodes);
     };
 
+    // Create the objects for the grid of nodes
     useEffect(() => {
         const rows: Node[][] = [];
 
@@ -86,7 +89,7 @@ const PathfindingVisualizer: React.FC = () => {
             let currRow: Node[] = [];
 
             for (let x = 0; x < 20; x++) {
-                currRow.push({
+                currRow.push({ // create each node
                     col: y,
                     row: x,
                     isStart: y === 0 && x === 0 ? true : false,
@@ -108,6 +111,7 @@ const PathfindingVisualizer: React.FC = () => {
         <div className='h-screen bg-[cornflowerblue]'>
             <Toolbar isSelected={isSelected} toggleSelected={toggleSelected} />
             <div className='flex flex-col items-center justify-center'>
+                {/* Create grid display on page */}
                 {nodes.map((row: Node[], i: number) => {
                     const topBorder = row[0].col === 0 ? true : false;
                     const botBorder =
