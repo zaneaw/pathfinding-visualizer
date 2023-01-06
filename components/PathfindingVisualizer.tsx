@@ -92,8 +92,19 @@ const PathfindingVisualizer: React.FC = () => {
                         !node.isStart &&
                         !node.isEnd
                     ) {
-                        nodeElement.className =
-                            'w-6 h-6 flex justify-center items-center border-[1px] border-black bg-yellow-500';
+                        nodeElement.className = `w-6 h-6 flex justify-center items-center border-[1px] border-black bg-yellow-500 ${
+                            node.row === 0
+                                ? 'border-t-2'
+                                : node.row === gridSize.rows - 1
+                                ? 'border-b-2'
+                                : ''
+                        } ${
+                            node.col === 0
+                                ? 'border-l-2'
+                                : node.col === gridSize.columns -1
+                                ? 'border-r-2'
+                                : ''
+                        }`;
                     }
                 });
             }, 50 * i);
