@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import TopToolbar from './TopToolbar';
 import NodeDisplay from './NodeDisplay';
 import { dijkstras, getNodesInShortestPath } from '../algorithms/dijkstras';
@@ -15,8 +15,17 @@ interface Node {
     prevNode: Node | null;
 }
 
+interface GridSize {
+    rows: number;
+    columns: number;
+}
+
 const PathfindingVisualizer: React.FC = () => {
     const [nodes, setNodes] = useState<Node[][]>([]);
+    const [gridSize, setGridSize] = useState<GridSize>({
+        rows: 20, 
+        columns: 30
+    });
     const [isSelected, setIsSelected] = useState<string>('');
     const [isMouseDown, setIsMouseDown] = useState(false);
     const nodesRef = useRef<HTMLDivElement[]>(new Array());
@@ -141,35 +150,49 @@ const PathfindingVisualizer: React.FC = () => {
         setNodes(nextNodes);
     };
 
-    // Create / Reset Grid
-    const createGrid = () => {
-        const rows: Node[][] = [];
-        let i = Math.floor(Math.random() * 1000);
+    const handleGridSizeChange = (e: any) => {
+        const editCols = e.target.id === 'columns-input' ? true : false;
 
-        for (let y = 0; y < 20; y++) {
-            let currRow: Node[] = [];
-
-            for (let x = 0; x < 50; x++) {
-                currRow.push({
-                    id: i,
-                    col: x,
-                    row: y,
-                    isStart: y === 8 && x === 10 ? true : false,
-                    isEnd: y === 12 && x === 35 ? true : false,
-                    isWall: false,
-                    isVisited: false,
-                    distance: Infinity,
-                    prevNode: null,
-                });
-
-                i++;
-            }
-
-            rows.push(currRow);
+        if (editCols) {
+            setGridSize({...gridSize, columns: e.target.value});
+        } else {
+            setGridSize({...gridSize, rows: e.target.value});
         }
+    }
 
-        setNodes(rows);
-    };
+    // Create / Reset Grid
+    const createGrid = useCallback(() => {
+            if (gridSize.rows < 5 || gridSize.columns < 5) {
+                // display a tooltip
+                return;
+            }
+            const rows: Node[][] = [];
+            let i = Math.floor(Math.random() * 1000);
+    
+            for (let y = 0; y < gridSize.rows; y++) {
+                let currRow: Node[] = [];
+    
+                for (let x = 0; x < gridSize.columns; x++) {
+                    currRow.push({
+                        id: i,
+                        col: x,
+                        row: y,
+                        isStart: y === 8 && x === 10 ? true : false,
+                        isEnd: y === 12 && x === 35 ? true : false,
+                        isWall: false,
+                        isVisited: false,
+                        distance: Infinity,
+                        prevNode: null,
+                    });
+    
+                    i++;
+                }
+    
+                rows.push(currRow);
+            }
+    
+            setNodes(rows);
+        }, [gridSize])
 
     const addToRefs = (el: HTMLDivElement) => {
         if (el && !nodesRef.current.includes(el)) {
@@ -179,7 +202,7 @@ const PathfindingVisualizer: React.FC = () => {
 
     useEffect(() => {
         createGrid();
-    }, []);
+    }, [createGrid, gridSize]);
 
     return (
         <div className='min-h-screen pb-12 bg-[cornflowerblue]'>
@@ -188,6 +211,8 @@ const PathfindingVisualizer: React.FC = () => {
                 toggleSelected={toggleSelected}
                 startAlgo={startAlgo}
                 resetGrid={resetGrid}
+                gridSize={gridSize}
+                handleGridSizeChange={handleGridSizeChange}
             />
             <div className='flex flex-col items-center justify-center'>
                 {/* Create grid display on page */}
