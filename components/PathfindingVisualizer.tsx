@@ -160,25 +160,43 @@ const PathfindingVisualizer: React.FC = () => {
         }
     }
 
+    const randomNumGen = (max: number): number => {
+        return Math.floor(Math.random() * max);
+    }
+
     // Create / Reset Grid
     const createGrid = useCallback(() => {
-            if (gridSize.rows < 5 || gridSize.columns < 5) {
-                // display a tooltip
+            // if (gridSize.rows < 5 || gridSize.columns < 5) {
+            //     // display a tooltip
+            //     return;
+            // }
+            if (!gridSize.rows || !gridSize.columns) {
                 return;
             }
+
             const rows: Node[][] = [];
-            let i = Math.floor(Math.random() * 1000);
+            let i = randomNumGen(10000); // 10k, used to rerender grid
+
+            const startCol = randomNumGen(gridSize.columns);
+            const startRow = randomNumGen(gridSize.rows);
+            let endCol = randomNumGen(gridSize.columns);
+            let endRow = randomNumGen(gridSize.rows);
+
+            if (startCol === endCol && startRow === endRow) {
+                endCol = randomNumGen(gridSize.columns);
+                endRow = randomNumGen(gridSize.rows);
+            }
     
-            for (let y = 0; y < gridSize.rows; y++) {
+            for (let x = 0; x < gridSize.rows; x++) {
                 let currRow: Node[] = [];
     
-                for (let x = 0; x < gridSize.columns; x++) {
+                for (let y = 0; y < gridSize.columns; y++) {
                     currRow.push({
                         id: i,
-                        col: x,
-                        row: y,
-                        isStart: y === 8 && x === 10 ? true : false,
-                        isEnd: y === 12 && x === 35 ? true : false,
+                        col: y,
+                        row: x,
+                        isStart: y === startCol && x === startRow ? true : false,
+                        isEnd: y === endCol && x === endRow ? true : false,
                         isWall: false,
                         isVisited: false,
                         distance: Infinity,
