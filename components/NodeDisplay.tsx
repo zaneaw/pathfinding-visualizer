@@ -53,13 +53,7 @@ const NodeDisplay: React.FC<Props> = ({
             ${node.isEnd ? 'bg-red-500' : ''}
             ${node.isWall ? 'bg-gray-500' : ''}`}
         >
-            {node.isStart 
-                ? <FiMapPin />
-                : node.isEnd
-                ? <GiFinishLine />
-                : node.isWall
-                ? <GiStoneWall />
-                : ''}
+            {node.isStart ? <FiMapPin /> : node.isEnd ? <GiFinishLine /> : ''}
         </div>
     );
 };
