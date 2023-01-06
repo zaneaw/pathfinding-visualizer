@@ -193,17 +193,17 @@ const PathfindingVisualizer: React.FC = () => {
 
     // Create / Reset Grid
     const createGrid = useCallback(() => {
-        // if (gridSize.rows < 5 || gridSize.columns < 5) {
-        //     // display a tooltip
-        //     return;
-        // }
-        if (!gridSize.rows || !gridSize.columns) {
+        // rows or columns input = 0 || empty
+        if (!gridSize.rows || !gridSize.columns || gridSize.rows < 1 || gridSize.columns < 1) {
+            // display notification
             return;
         }
 
         const rows: Node[][] = [];
-        let i = randomNumGen(10000); // 10k, used to rerender grid
+        // used to rerender grid, node ids start at i and increment every node
+        let i = randomNumGen(10000);
 
+        // set random start and end points on grid based on grid size
         const startCol = randomNumGen(gridSize.columns);
         const startRow = randomNumGen(gridSize.rows);
         let endCol = randomNumGen(gridSize.columns);
