@@ -182,7 +182,7 @@ const PathfindingVisualizer: React.FC = () => {
     }, []);
 
     return (
-        <div className='h-screen bg-[cornflowerblue]'>
+        <div className='min-h-screen pb-12 bg-[cornflowerblue]'>
             <TopToolbar
                 isSelected={isSelected}
                 toggleSelected={toggleSelected}
