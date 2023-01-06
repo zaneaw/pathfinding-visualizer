@@ -23,12 +23,18 @@ interface GridSize {
 const PathfindingVisualizer: React.FC = () => {
     const [nodes, setNodes] = useState<Node[][]>([]);
     const [gridSize, setGridSize] = useState<GridSize>({
-        rows: 20, 
-        columns: 30
+        rows: 20,
+        columns: 30,
     });
     const [isSelected, setIsSelected] = useState<string>('');
     const [isMouseDown, setIsMouseDown] = useState(false);
     const nodesRef = useRef<HTMLDivElement[]>(new Array());
+
+    const addToRefs = (el: HTMLDivElement) => {
+        if (el && !nodesRef.current.includes(el)) {
+            nodesRef.current.push(el);
+        }
+    };
 
     // Selector for toolbar
     const toggleSelected = (button: string): void => {
@@ -39,7 +45,19 @@ const PathfindingVisualizer: React.FC = () => {
         }
     };
 
-    const animateDijkstra = (visitedNodes: Node[], nodesInShortestPath: Node[]) => {
+    // Start Algo
+    const startAlgo = (): void => {
+        // run the algorithm
+        const [visitedNodes, startNode, endNode]: [Node[], Node, Node] =
+            dijkstras(nodes);
+        const nodesInShortestPath = getNodesInShortestPath(endNode);
+        animateDijkstra(visitedNodes, nodesInShortestPath);
+    };
+
+    const animateDijkstra = (
+        visitedNodes: Node[],
+        nodesInShortestPath: Node[]
+    ) => {
         for (let i = 0; i <= visitedNodes.length; i++) {
             if (i === visitedNodes.length) {
                 setTimeout(() => {
@@ -50,41 +68,36 @@ const PathfindingVisualizer: React.FC = () => {
             setTimeout(() => {
                 const node = visitedNodes[i];
                 const nodeId = String(node.id);
-                nodesRef.current.map(nodeElement => {
-                    if (nodeElement.id === nodeId && !node.isStart && !node.isEnd) {
-                        nodeElement.className += ' bg-purple-500'                        
+                nodesRef.current.map((nodeElement) => {
+                    if (
+                        nodeElement.id === nodeId &&
+                        !node.isStart &&
+                        !node.isEnd
+                    ) {
+                        nodeElement.className += ' bg-purple-500';
                     }
-                })
-                
+                });
             }, 10 * i);
         }
-    }
+    };
 
     const animateShortestPath = (nodesInShortestPath: Node[]) => {
         for (let i = 0; i < nodesInShortestPath.length; i++) {
             setTimeout(() => {
                 const node = nodesInShortestPath[i];
                 const nodeId = String(node.id);
-                nodesRef.current.map(nodeElement => {
-                    if (nodeElement.id === nodeId && !node.isStart && !node.isEnd) {
-                        nodeElement.className = 'w-6 h-6 flex justify-center items-center border-[1px] border-black bg-yellow-500'                        
+                nodesRef.current.map((nodeElement) => {
+                    if (
+                        nodeElement.id === nodeId &&
+                        !node.isStart &&
+                        !node.isEnd
+                    ) {
+                        nodeElement.className =
+                            'w-6 h-6 flex justify-center items-center border-[1px] border-black bg-yellow-500';
                     }
-                })
+                });
             }, 50 * i);
-        } 
-    }
-
-    // Start Algo
-    const startAlgo = (): void => {
-        // run the algorithm
-        const [visitedNodes, startNode, endNode]: [Node[], Node, Node] = dijkstras(nodes);
-        const nodesInShortestPath = getNodesInShortestPath(endNode);
-        animateDijkstra(visitedNodes, nodesInShortestPath);
-    };
-
-    // Reset Grid
-    const resetGrid = (): void => {
-        createGrid();
+        }
     };
 
     // Mouse events
@@ -116,13 +129,20 @@ const PathfindingVisualizer: React.FC = () => {
                 ? 'isEnd'
                 : 'isWall';
 
+        // stop from trying to turn start or end nodes into a wall
         if (varName !== 'isWall' && (currNode.isStart || currNode.isEnd)) {
             return;
         }
 
+        // loop over nodes to change necessary nodes
         const nextNodes = nodes.map((row) => {
             row.map((node) => {
+                // start or end is selected
                 if (varName !== 'isWall') {
+                    // if node in loop = node selected
+                    // or if node is start/is end
+                    // set selected node to start/end
+                    // unset currently selected node to not start/end
                     if (
                         (currNode.col === node.col &&
                             currNode.row === node.row &&
@@ -133,7 +153,9 @@ const PathfindingVisualizer: React.FC = () => {
                         node.isWall = false;
                         return { ...node };
                     }
+                // wall is selected
                 } else {
+                    // remove or add wall to selected node
                     if (
                         currNode.col === node.col &&
                         currNode.row === node.row
@@ -150,73 +172,72 @@ const PathfindingVisualizer: React.FC = () => {
         setNodes(nextNodes);
     };
 
+    const randomNumGen = (max: number): number => {
+        return Math.floor(Math.random() * max);
+    };
+
     const handleGridSizeChange = (e: any) => {
         const editCols = e.target.id === 'columns-input' ? true : false;
 
         if (editCols) {
-            setGridSize({...gridSize, columns: e.target.value});
+            setGridSize({ ...gridSize, columns: e.target.value });
         } else {
-            setGridSize({...gridSize, rows: e.target.value});
+            setGridSize({ ...gridSize, rows: e.target.value });
         }
-    }
+    };
 
-    const randomNumGen = (max: number): number => {
-        return Math.floor(Math.random() * max);
-    }
+    // Reset Grid
+    const resetGrid = (): void => {
+        createGrid();
+    };
 
     // Create / Reset Grid
     const createGrid = useCallback(() => {
-            // if (gridSize.rows < 5 || gridSize.columns < 5) {
-            //     // display a tooltip
-            //     return;
-            // }
-            if (!gridSize.rows || !gridSize.columns) {
-                return;
-            }
-
-            const rows: Node[][] = [];
-            let i = randomNumGen(10000); // 10k, used to rerender grid
-
-            const startCol = randomNumGen(gridSize.columns);
-            const startRow = randomNumGen(gridSize.rows);
-            let endCol = randomNumGen(gridSize.columns);
-            let endRow = randomNumGen(gridSize.rows);
-
-            if (startCol === endCol && startRow === endRow) {
-                endCol = randomNumGen(gridSize.columns);
-                endRow = randomNumGen(gridSize.rows);
-            }
-    
-            for (let x = 0; x < gridSize.rows; x++) {
-                let currRow: Node[] = [];
-    
-                for (let y = 0; y < gridSize.columns; y++) {
-                    currRow.push({
-                        id: i,
-                        col: y,
-                        row: x,
-                        isStart: y === startCol && x === startRow ? true : false,
-                        isEnd: y === endCol && x === endRow ? true : false,
-                        isWall: false,
-                        isVisited: false,
-                        distance: Infinity,
-                        prevNode: null,
-                    });
-    
-                    i++;
-                }
-    
-                rows.push(currRow);
-            }
-    
-            setNodes(rows);
-        }, [gridSize])
-
-    const addToRefs = (el: HTMLDivElement) => {
-        if (el && !nodesRef.current.includes(el)) {
-            nodesRef.current.push(el);
+        // if (gridSize.rows < 5 || gridSize.columns < 5) {
+        //     // display a tooltip
+        //     return;
+        // }
+        if (!gridSize.rows || !gridSize.columns) {
+            return;
         }
-    }
+
+        const rows: Node[][] = [];
+        let i = randomNumGen(10000); // 10k, used to rerender grid
+
+        const startCol = randomNumGen(gridSize.columns);
+        const startRow = randomNumGen(gridSize.rows);
+        let endCol = randomNumGen(gridSize.columns);
+        let endRow = randomNumGen(gridSize.rows);
+
+        if (startCol === endCol && startRow === endRow) {
+            endCol = randomNumGen(gridSize.columns);
+            endRow = randomNumGen(gridSize.rows);
+        }
+
+        for (let x = 0; x < gridSize.rows; x++) {
+            let currRow: Node[] = [];
+
+            for (let y = 0; y < gridSize.columns; y++) {
+                currRow.push({
+                    id: i,
+                    col: y,
+                    row: x,
+                    isStart: y === startCol && x === startRow ? true : false,
+                    isEnd: y === endCol && x === endRow ? true : false,
+                    isWall: false,
+                    isVisited: false,
+                    distance: Infinity,
+                    prevNode: null,
+                });
+
+                i++;
+            }
+
+            rows.push(currRow);
+        }
+
+        setNodes(rows);
+    }, [gridSize]);
 
     useEffect(() => {
         createGrid();
@@ -236,15 +257,18 @@ const PathfindingVisualizer: React.FC = () => {
                 {/* Create grid display on page */}
                 {nodes.map((row: Node[], i: number) => {
                     const topBorder = row[0].row === 0 ? true : false;
-                    const botBorder = row[0].row === nodes.length - 1 ? true : false;
+                    const botBorder =
+                        row[0].row === nodes.length - 1 ? true : false;
                     return (
                         <div
                             key={i}
                             className='flex flex-row items-center justify-center'
                         >
                             {row.map((node: Node) => {
-                                const leftBorder = node.col === 0 ? true : false;
-                                const rightBorder = node.col === row.length - 1 ? true : false;
+                                const leftBorder =
+                                    node.col === 0 ? true : false;
+                                const rightBorder =
+                                    node.col === row.length - 1 ? true : false;
                                 return (
                                     <NodeDisplay
                                         key={node.id}
