@@ -9,3 +9,8 @@ More pathfinding algorithms
 Build walls (button)
 Style buttons and stuff
 Animate boxes changing to purple and yellow
+
+
+randomize start and end -> resets walls but not results -> should reset results but not walls
+
+reset walls, results, and grid works.
