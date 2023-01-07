@@ -39,7 +39,6 @@ const NodeDisplay: React.FC<Props> = ({
     return (
         <div
             id={String(node.id)}
-            ref={addToRefs}
             onMouseDown={() => handleMouseDown(node)}
             onMouseEnter={() => handleMouseEnter(node)}
             onMouseUp={() => handleMouseUp()}
