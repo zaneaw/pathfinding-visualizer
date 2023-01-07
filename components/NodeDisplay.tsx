@@ -12,6 +12,7 @@ interface Node {
     isVisited: boolean;
     distance: number;
     prevNode: Node | null;
+    customStyles: string;
 }
 
 interface Props {
@@ -23,7 +24,6 @@ interface Props {
     botBorder: boolean;
     leftBorder: boolean;
     rightBorder: boolean;
-    addToRefs: (el: HTMLDivElement) => void;
 }
 
 const NodeDisplay: React.FC<Props> = ({
@@ -35,7 +35,6 @@ const NodeDisplay: React.FC<Props> = ({
     botBorder,
     leftBorder,
     rightBorder,
-    addToRefs,
 }) => {
     return (
         <div
@@ -51,7 +50,8 @@ const NodeDisplay: React.FC<Props> = ({
             } ${rightBorder ? 'border-r-2' : ''}
             ${node.isStart ? 'bg-green-500' : ''}
             ${node.isEnd ? 'bg-red-500' : ''}
-            ${node.isWall ? 'bg-gray-500' : ''}`}
+            ${node.isWall ? 'bg-gray-500' : ''}
+            ${node.customStyles}`}
         >
             {node.isStart ? <FiMapPin /> : node.isEnd ? <GiFinishLine /> : ''}
         </div>
