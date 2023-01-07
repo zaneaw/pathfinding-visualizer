@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import TopToolbar from './TopToolbar';
 import NodeDisplay from './NodeDisplay';
 import { dijkstras, getNodesInShortestPath } from '../algorithms/dijkstras';
@@ -13,6 +13,7 @@ interface Node {
     isVisited: boolean;
     distance: number;
     prevNode: Node | null;
+    customStyles: string;
 }
 
 interface GridSize {
@@ -21,20 +22,14 @@ interface GridSize {
 }
 
 const PathfindingVisualizer: React.FC = () => {
-    const [nodes, setNodes] = useState<Node[][]>([]);
+    const [gridNodes, setGridNodes] = useState<Node[][]>([]);
     const [gridSize, setGridSize] = useState<GridSize>({
         rows: 20,
         columns: 30,
     });
+    const [keyForGrid, setKeyForGrid] = useState<number>(0);
     const [isSelected, setIsSelected] = useState<string>('');
     const [isMouseDown, setIsMouseDown] = useState(false);
-    const nodesRef = useRef<HTMLDivElement[]>(new Array());
-
-    const addToRefs = (el: HTMLDivElement) => {
-        if (el && !nodesRef.current.includes(el)) {
-            nodesRef.current.push(el);
-        }
-    };
 
     // Selector for toolbar
     const toggleSelected = (button: string): void => {
@@ -48,8 +43,8 @@ const PathfindingVisualizer: React.FC = () => {
     // Start Algo
     const startAlgo = (): void => {
         // run the algorithm
-        const [visitedNodes, startNode, endNode]: [Node[], Node, Node] =
-            dijkstras(nodes);
+        resetGrid(2);
+        const [visitedNodes, endNode]: [Node[], Node] = dijkstras(gridNodes);
         const nodesInShortestPath = getNodesInShortestPath(endNode);
         animateDijkstra(visitedNodes, nodesInShortestPath);
     };
@@ -66,17 +61,20 @@ const PathfindingVisualizer: React.FC = () => {
                 return;
             }
             setTimeout(() => {
-                const node = visitedNodes[i];
-                const nodeId = String(node.id);
-                nodesRef.current.map((nodeElement) => {
-                    if (
-                        nodeElement.id === nodeId &&
-                        !node.isStart &&
-                        !node.isEnd
-                    ) {
-                        nodeElement.className += ' bg-purple-500';
-                    }
-                });
+                const currNode = visitedNodes[i];
+
+                const nextNodes = gridNodes.map(row => {
+                    row.map(node => {
+                        if (node.id === currNode.id && !node.isStart && !node.isEnd) {
+                            node.customStyles = "bg-purple-500";
+                            return {...node};
+                        }
+                        return node;
+                    })
+                    return [...row]
+                })
+
+                setGridNodes(nextNodes);
             }, 10 * i);
         }
     };
@@ -84,29 +82,21 @@ const PathfindingVisualizer: React.FC = () => {
     const animateShortestPath = (nodesInShortestPath: Node[]) => {
         for (let i = 0; i < nodesInShortestPath.length; i++) {
             setTimeout(() => {
-                const node = nodesInShortestPath[i];
-                const nodeId = String(node.id);
-                nodesRef.current.map((nodeElement) => {
-                    if (
-                        nodeElement.id === nodeId &&
-                        !node.isStart &&
-                        !node.isEnd
-                    ) {
-                        nodeElement.className = `w-6 h-6 flex justify-center items-center border-[1px] border-black bg-yellow-500 ${
-                            node.row === 0
-                                ? 'border-t-2'
-                                : node.row === gridSize.rows - 1
-                                ? 'border-b-2'
-                                : ''
-                        } ${
-                            node.col === 0
-                                ? 'border-l-2'
-                                : node.col === gridSize.columns -1
-                                ? 'border-r-2'
-                                : ''
-                        }`;
-                    }
-                });
+                const currNode = nodesInShortestPath[i];
+                
+                const nextNodes = gridNodes.map(row => {
+                    row.map(node => {
+                        if (node.id === currNode.id && !node.isStart && !node.isEnd) {
+                            node.customStyles = "bg-yellow-500";
+                            return {...node};
+                        }
+                        return node;
+                    })
+                    return [...row]
+                })
+                
+                setGridNodes(nextNodes);
+
             }, 50 * i);
         }
     };
@@ -140,13 +130,13 @@ const PathfindingVisualizer: React.FC = () => {
                 ? 'isEnd'
                 : 'isWall';
 
-        // stop from trying to turn start or end nodes into a wall
-        if (varName !== 'isWall' && (currNode.isStart || currNode.isEnd)) {
+        // stop from trying to overwrite a start or end node
+        if (currNode.isStart || currNode.isEnd) {
             return;
         }
 
         // loop over nodes to change necessary nodes
-        const nextNodes = nodes.map((row) => {
+        const nextNodes = gridNodes.map((row) => {
             row.map((node) => {
                 // start or end is selected
                 if (varName !== 'isWall') {
@@ -154,24 +144,19 @@ const PathfindingVisualizer: React.FC = () => {
                     // or if node is start/is end
                     // set selected node to start/end
                     // unset currently selected node to not start/end
-                    if (
-                        (currNode.col === node.col &&
-                            currNode.row === node.row &&
-                            !node[varName]) ||
-                        node[varName]
-                    ) {
+                    if ((currNode.col === node.col && currNode.row === node.row && !node[varName]) || node[varName]) {
                         node[varName] = !node[varName];
                         node.isWall = false;
-                        return { ...node };
+                        return {...node};
                     }
                 // wall is selected
-                } else {
+                } else if (varName === 'isWall' ) {
                     // remove or add wall to selected node
                     if (
                         currNode.col === node.col &&
                         currNode.row === node.row
                     ) {
-                        node[varName] = !node[varName];
+                        node.isWall = !node.isWall;
                         return { ...node };
                     }
                 }
@@ -180,12 +165,27 @@ const PathfindingVisualizer: React.FC = () => {
             return [...row];
         });
 
-        setNodes(nextNodes);
+        setGridNodes(nextNodes);
     };
 
     const randomNumGen = (max: number): number => {
         return Math.floor(Math.random() * max);
     };
+
+    const getNewPoints = useCallback(() => {
+        const startCol = randomNumGen(gridSize.columns);
+        const startRow = randomNumGen(gridSize.rows);
+        let endCol = randomNumGen(gridSize.columns);
+        let endRow = randomNumGen(gridSize.rows);
+
+        // start and end points are the same, redo the endpoint
+        if (startCol === endCol && startRow === endRow) {
+            endCol = randomNumGen(gridSize.columns);
+            endRow = randomNumGen(gridSize.rows);
+        }
+
+        return [startCol, startRow, endCol, endRow];
+    }, [gridSize]);
 
     const handleGridSizeChange = (e: any) => {
         const editCols = e.target.id === 'columns-input' ? true : false;
@@ -197,37 +197,84 @@ const PathfindingVisualizer: React.FC = () => {
         }
     };
 
-    // Reset Grid
-    const resetGrid = (): void => {
-        createGrid();
-    };
+    const resetGrid = (action?: number): void => {
+        if (action) {
+            if (action === 1) { // randomize start and end points
+                // set random start and end points on grid based on grid size
+                let [startCol, startRow, endCol, endRow] = getNewPoints();
+
+                const nextNodes = gridNodes.map(row => {
+                    row.map(node => {
+                        if (node.col === startCol && node.row === startRow) {
+                            node.isStart = true;
+                            node.isWall = false;
+                            return {...node};
+                        } else if (node.isStart && (node.col !== startCol || node.row !== startRow)) {
+                            node.isStart = false;
+                            return {...node};
+                        }
+                        if (node.col === endCol && node.row === endRow) {
+                            node.isEnd = true;
+                            node.isWall = false;
+                            return {...node};
+                        } else if (node.isEnd && (node.col !== endCol || node.row !== endRow)) {
+                            node.isEnd = false;
+                            return {...node};
+                        }
+                        return node;
+                    })
+                    return [...row];
+                })
+
+                setGridNodes(nextNodes);
+            } else if (action === 2) { // reset results
+                const nextNodes = gridNodes.map(row => {
+                    row.map(node => {
+                        node.isVisited = false;
+                        node.distance = Infinity;
+                        node.prevNode = null;
+                        node.customStyles = '';
+                        return {...node}
+                    })
+                    return [...row];
+                })
+
+                setGridNodes(nextNodes);
+            } else if (action === 3) { // reset walls and results, gets new points
+                // setKeyForGrid(randomNumGen(10000));
+            } else if (action === 4) { // reset walls only
+                const nextNodes = gridNodes.map(row => {
+                    row.map(node => {
+                        if (node.isWall) {
+                            node.isWall = false;
+                            return {...node};
+                        }
+                        return node;
+                    })
+                    return [...row];
+                })
+
+                setGridNodes(nextNodes)
+            }
+        }
+    }
 
     // Create / Reset Grid
     const createGrid = useCallback(() => {
         // rows or columns input = 0 || empty
         if (!gridSize.rows || !gridSize.columns || gridSize.rows < 1 || gridSize.columns < 1) {
-            // display notification
+            // TODO: display notification
             return;
         }
 
         const rows: Node[][] = [];
+        const [startCol, startRow, endCol, endRow] = getNewPoints();
+
         // used to rerender grid, node ids start at i and increment every node
-        let i = randomNumGen(10000);
-
-        // set random start and end points on grid based on grid size
-        const startCol = randomNumGen(gridSize.columns);
-        const startRow = randomNumGen(gridSize.rows);
-        let endCol = randomNumGen(gridSize.columns);
-        let endRow = randomNumGen(gridSize.rows);
-
-        if (startCol === endCol && startRow === endRow) {
-            endCol = randomNumGen(gridSize.columns);
-            endRow = randomNumGen(gridSize.rows);
-        }
+        let i = keyForGrid;
 
         for (let x = 0; x < gridSize.rows; x++) {
             let currRow: Node[] = [];
-
             for (let y = 0; y < gridSize.columns; y++) {
                 currRow.push({
                     id: i,
@@ -239,20 +286,19 @@ const PathfindingVisualizer: React.FC = () => {
                     isVisited: false,
                     distance: Infinity,
                     prevNode: null,
+                    customStyles: '',
                 });
-
                 i++;
             }
-
             rows.push(currRow);
         }
 
-        setNodes(rows);
-    }, [gridSize]);
+        setGridNodes(rows);
+    }, [keyForGrid, gridSize, getNewPoints]);
 
     useEffect(() => {
         createGrid();
-    }, [createGrid, gridSize]);
+    }, [createGrid]);
 
     return (
         <div className='min-h-screen pb-12 bg-[cornflowerblue]'>
@@ -260,16 +306,17 @@ const PathfindingVisualizer: React.FC = () => {
                 isSelected={isSelected}
                 toggleSelected={toggleSelected}
                 startAlgo={startAlgo}
+                createGrid={createGrid}
                 resetGrid={resetGrid}
                 gridSize={gridSize}
                 handleGridSizeChange={handleGridSizeChange}
             />
             <div className='flex flex-col items-center justify-center'>
                 {/* Create grid display on page */}
-                {nodes.map((row: Node[], i: number) => {
+                {gridNodes.map((row: Node[], i: number) => {
                     const topBorder = row[0].row === 0 ? true : false;
                     const botBorder =
-                        row[0].row === nodes.length - 1 ? true : false;
+                        row[0].row === gridNodes.length - 1 ? true : false;
                     return (
                         <div
                             key={i}
@@ -291,7 +338,6 @@ const PathfindingVisualizer: React.FC = () => {
                                         botBorder={botBorder}
                                         leftBorder={leftBorder}
                                         rightBorder={rightBorder}
-                                        addToRefs={addToRefs}
                                     />
                                 );
                             })}
