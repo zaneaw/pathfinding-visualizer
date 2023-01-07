@@ -8,9 +8,10 @@ interface Node {
     isVisited: boolean;
     distance: number;
     prevNode: Node | null;
+    customStyles: string;
 }
 
-export const dijkstras = (grid: Node[][]): [Node[], Node, Node] => {
+export const dijkstras = (grid: Node[][]): [Node[], Node] => {
     const visitedNodesInOrder: Node[] = [];
     const [unvisitedNodes, startNode, endNode]: [Node[], Node, Node] = getAllNodes(grid);
     startNode.distance = 0;
@@ -38,7 +39,7 @@ export const dijkstras = (grid: Node[][]): [Node[], Node, Node] => {
         updateUnvisitedNeighbors(closestNode, grid);
     }
 
-    return [visitedNodesInOrder, startNode, endNode];
+    return [visitedNodesInOrder, endNode];
 };
 
 const getAllNodes = (grid: Node[][]): [Node[], Node, Node] => {
