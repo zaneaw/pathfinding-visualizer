@@ -1,4 +1,4 @@
-
+Display notification if inputs are incorrect
 Clear walls
 Clear previous results (but not walls)
 Add weights
@@ -11,7 +11,6 @@ Style buttons and stuff
 Animate boxes changing to purple and yellow
 
 
-randomize start and end -> resets walls but not results -> should reset results but not walls. Would removing start and end points from state be plausible?
-** create new func -> getNewGridWithWallToggled -> setNodes and map over nodes to create new nodes to push into state while changing the start and end points.
+start and end nodes are dependencies on create grid
 
-reset walls, results, and grid works.
+change from checking node.row && node.col to node.id?
