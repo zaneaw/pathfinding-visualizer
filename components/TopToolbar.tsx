@@ -13,7 +13,8 @@ interface Props {
     isSelected: string;
     toggleSelected: (button: string) => void;
     startAlgo: () => void;
-    resetGrid: () => void;
+    createGrid: () => void;
+    resetGrid: (action: number) => void;
     gridSize: GridSize;
     handleGridSizeChange: (e: any) => void;
 }
@@ -22,6 +23,7 @@ const Toolbar: React.FC<Props> = ({
     isSelected,
     toggleSelected,
     startAlgo,
+    createGrid,
     resetGrid,
     gridSize,
     handleGridSizeChange,
@@ -44,7 +46,7 @@ const Toolbar: React.FC<Props> = ({
                 />
                 <ToolbarButton 
                     handleClick={() => toggleSelected('end')}
-                    title={"Choose Start"}
+                    title={"Choose End"}
                     icon={<GiFinishLine />}
                     styles={isSelected === 'end' ? 'bg-gray-500' : ''}
                 />
@@ -64,19 +66,28 @@ const Toolbar: React.FC<Props> = ({
                     styles={null}
                 />
                 <ToolbarButton 
-                    handleClick={() => resetGrid()}
+                    handleClick={() => resetGrid(1)}
+                    title={"Randomize Start and End"}
+                    icon={null}
+                    styles={null}
+                />
+                <ToolbarButton 
+                    handleClick={() => resetGrid(4)}
                     title={"Reset Walls"}
                     icon={null}
                     styles={null}
                 />
                 <ToolbarButton 
-                    handleClick={() => resetGrid()}
+                    handleClick={() => resetGrid(2)}
                     title={"Reset Results"}
                     icon={null}
                     styles={null}
                 />
                 <ToolbarButton 
-                    handleClick={() => resetGrid()}
+                    handleClick={() => {
+                        resetGrid(2) 
+                        resetGrid(4)
+                    }}
                     title={"Reset Grid"}
                     icon={null}
                     styles={null}
