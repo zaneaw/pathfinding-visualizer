@@ -144,7 +144,7 @@ const PathfindingVisualizer: React.FC = () => {
                     // or if node is start/is end
                     // set selected node to start/end
                     // unset currently selected node to not start/end
-                    if ((currNode.col === node.col && currNode.row === node.row && !node[varName]) || node[varName]) {
+                    if ((currNode.id === node.id && !node[varName]) || node[varName]) {
                         node[varName] = !node[varName];
                         node.isWall = false;
                         return {...node};
@@ -152,10 +152,7 @@ const PathfindingVisualizer: React.FC = () => {
                 // wall is selected
                 } else if (varName === 'isWall' ) {
                     // remove or add wall to selected node
-                    if (
-                        currNode.col === node.col &&
-                        currNode.row === node.row
-                    ) {
+                    if (currNode.id === node.id) {
                         node.isWall = !node.isWall;
                         return { ...node };
                     }
