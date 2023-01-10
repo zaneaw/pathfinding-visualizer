@@ -17,6 +17,8 @@ interface Props {
     resetGrid: (action: number) => void;
     gridSize: GridSize;
     handleGridSizeChange: (e: any) => void;
+    algoSpeed: number;
+    handleAlgoSpeedChange: (e: any) => void;
 }
 
 const Toolbar: React.FC<Props> = ({
@@ -27,6 +29,8 @@ const Toolbar: React.FC<Props> = ({
     resetGrid,
     gridSize,
     handleGridSizeChange,
+    algoSpeed,
+    handleAlgoSpeedChange,
 }) => {
     return (
         <div className='flex flex-col'>
@@ -72,7 +76,7 @@ const Toolbar: React.FC<Props> = ({
                     styles={null}
                 />
                 <ToolbarButton 
-                    handleClick={() => resetGrid(4)}
+                    handleClick={() => resetGrid(3)}
                     title={"Reset Walls"}
                     icon={null}
                     styles={null}
@@ -113,6 +117,20 @@ const Toolbar: React.FC<Props> = ({
                     <label>Rows</label>
                     <input id="rows-input" type="number" value={gridSize.rows} onChange={handleGridSizeChange} />
                 </div> 
+            </div>
+
+            <div className='flex flex-row items-center justify-around gap-4 mb-4 pt-4'>
+
+                <div
+                    className={`py-1 w-40 text-center`}
+                >
+                    Modify Algorithm Speed:
+                </div>
+                <div
+                    className={`py-1 w-40 text-center`}
+                >
+                    <input id="columns-input" type="range" min="5" max="200" step="5" value={algoSpeed} onChange={handleAlgoSpeedChange} />
+                </div>
             </div>
         </div>
     );

@@ -27,7 +27,6 @@ const PathfindingVisualizer: React.FC = () => {
         rows: 20,
         columns: 30,
     });
-    const [keyForGrid, setKeyForGrid] = useState<number>(0);
     const [isSelected, setIsSelected] = useState<string>('');
     const [isMouseDown, setIsMouseDown] = useState(false);
 
@@ -57,7 +56,7 @@ const PathfindingVisualizer: React.FC = () => {
             if (i === visitedNodes.length) {
                 setTimeout(() => {
                     animateShortestPath(nodesInShortestPath);
-                }, 10 * i);
+                }, algoSpeed * i);
                 return;
             }
             setTimeout(() => {
@@ -75,7 +74,7 @@ const PathfindingVisualizer: React.FC = () => {
                 })
 
                 setGridNodes(nextNodes);
-            }, 10 * i);
+            }, algoSpeed * i);
         }
     };
 
@@ -194,6 +193,10 @@ const PathfindingVisualizer: React.FC = () => {
         }
     };
 
+    const handleAlgoSpeedChange = (e: any) => {
+        setAlgoSpeed(e.target.value);
+    }
+
     const resetGrid = (action?: number): void => {
         if (action) {
             if (action === 1) { // randomize start and end points
@@ -237,9 +240,7 @@ const PathfindingVisualizer: React.FC = () => {
                 })
 
                 setGridNodes(nextNodes);
-            } else if (action === 3) { // reset walls and results, gets new points
-                // setKeyForGrid(randomNumGen(10000));
-            } else if (action === 4) { // reset walls only
+            } else if (action === 3) { // reset walls only
                 const nextNodes = gridNodes.map(row => {
                     row.map(node => {
                         if (node.isWall) {
@@ -307,6 +308,8 @@ const PathfindingVisualizer: React.FC = () => {
                 resetGrid={resetGrid}
                 gridSize={gridSize}
                 handleGridSizeChange={handleGridSizeChange}
+                algoSpeed={algoSpeed}
+                handleAlgoSpeedChange={handleAlgoSpeedChange}
             />
             <div className='flex flex-col items-center justify-center'>
                 {/* Create grid display on page */}
