@@ -45,12 +45,6 @@ const Toolbar: React.FC<Props> = ({
             />
 
             <div className='flex flex-col items-center justify-center gap-4 mb-4 pt-4'>
-                {/* <ToolbarButton 
-                    handleClick={() => pauseAlgo()}
-                    title={"Pause Algorithm"}
-                    icon={null}
-                    styles={null}
-                /> */}
                 <ToolbarButton 
                     handleClick={() => startAlgo()}
                     title={"Run Algorithm"}
