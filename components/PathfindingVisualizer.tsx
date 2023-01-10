@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import TopToolbar from './TopToolbar';
 import NodeDisplay from './NodeDisplay';
 import { dijkstras, getNodesInShortestPath } from '../algorithms/dijkstras';
@@ -25,11 +25,13 @@ const PathfindingVisualizer: React.FC = () => {
     const [gridNodes, setGridNodes] = useState<Node[][]>([]);
     const [gridSize, setGridSize] = useState<GridSize>({
         rows: 20,
-        columns: 30,
+        columns: 20,
     });
     const [isSelected, setIsSelected] = useState<string>('');
     const [isMouseDown, setIsMouseDown] = useState(false);
     const [algoSpeed, setAlgoSpeed] = useState<number>(10);
+    const isAlgoRunning = useRef<boolean>(false);
+
 
     // Selector for toolbar
     const toggleSelected = (button: string): void => {
@@ -44,6 +46,7 @@ const PathfindingVisualizer: React.FC = () => {
     const startAlgo = (): void => {
         // run the algorithm
         resetGrid(2);
+        isAlgoRunning.current = true;
         const [visitedNodes, endNode]: [Node[], Node] = dijkstras(gridNodes);
         const nodesInShortestPath = getNodesInShortestPath(endNode);
         animateDijkstra(visitedNodes, nodesInShortestPath);
@@ -77,9 +80,18 @@ const PathfindingVisualizer: React.FC = () => {
                 setGridNodes(nextNodes);
             }, algoSpeed * i);
         }
+        if (!!nodesInShortestPath.length) {
+            isAlgoRunning.current = false;
+        }
     };
 
     const animateShortestPath = (nodesInShortestPath: Node[]) => {
+        const shortestPathTiming: number = (algoSpeed < 75) ? (algoSpeed * 5) : (algoSpeed * 2);
+
+        setTimeout(() => {
+            isAlgoRunning.current = false;
+        }, (shortestPathTiming * nodesInShortestPath.length - shortestPathTiming))
+
         for (let i = 0; i < nodesInShortestPath.length; i++) {
             setTimeout(() => {
                 const currNode = nodesInShortestPath[i];
@@ -96,8 +108,7 @@ const PathfindingVisualizer: React.FC = () => {
                 })
                 
                 setGridNodes(nextNodes);
-
-            }, 50 * i);
+            }, (shortestPathTiming * i));
         }
     };
 
@@ -268,15 +279,13 @@ const PathfindingVisualizer: React.FC = () => {
 
         const rows: Node[][] = [];
         const [startCol, startRow, endCol, endRow] = getNewPoints();
-
-        // used to rerender grid, node ids start at i and increment every node
-        let i = keyForGrid;
+        let nodeStartId = 0;
 
         for (let x = 0; x < gridSize.rows; x++) {
             let currRow: Node[] = [];
             for (let y = 0; y < gridSize.columns; y++) {
                 currRow.push({
-                    id: i,
+                    id: nodeStartId,
                     col: y,
                     row: x,
                     isStart: y === startCol && x === startRow ? true : false,
@@ -287,13 +296,13 @@ const PathfindingVisualizer: React.FC = () => {
                     prevNode: null,
                     customStyles: '',
                 });
-                i++;
+                nodeStartId++;
             }
             rows.push(currRow);
         }
 
         setGridNodes(rows);
-    }, [keyForGrid, gridSize, getNewPoints]);
+    }, [gridSize, getNewPoints]);
 
     useEffect(() => {
         createGrid();
@@ -311,6 +320,7 @@ const PathfindingVisualizer: React.FC = () => {
                 handleGridSizeChange={handleGridSizeChange}
                 algoSpeed={algoSpeed}
                 handleAlgoSpeedChange={handleAlgoSpeedChange}
+                isAlgoRunning={isAlgoRunning.current}
             />
             <div className='flex flex-col items-center justify-center'>
                 {/* Create grid display on page */}
