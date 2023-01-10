@@ -42,7 +42,7 @@ const NodeDisplay: React.FC<Props> = ({
             onMouseDown={() => handleMouseDown(node)}
             onMouseEnter={() => handleMouseEnter(node)}
             onMouseUp={() => handleMouseUp()}
-            className={`w-6 h-6 flex justify-center items-center border-[1px] border-black ${
+            className={`w-6 h-6 flex justify-center items-center border-[1px] border-black transition-all ease-in duration-150 ${
                 topBorder ? 'border-t-2' : ''
             } ${botBorder ? 'border-b-2' : ''} ${
                 leftBorder ? 'border-l-2' : ''
