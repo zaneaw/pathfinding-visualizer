@@ -2,8 +2,7 @@ Display notification if inputs are incorrect
 
 Add weights
 
-Add slider for how fast animations should run
+Add a key for the grid: Wall = gray, Visited = purple, Shortest Path = yellow, unvisited = blue, Start = green, End = red
 
 More pathfinding algorithms
 Style buttons and stuff
-Animate boxes changing to purple and yellow
