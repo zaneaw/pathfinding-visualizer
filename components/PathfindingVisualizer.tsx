@@ -29,6 +29,7 @@ const PathfindingVisualizer: React.FC = () => {
     });
     const [isSelected, setIsSelected] = useState<string>('');
     const [isMouseDown, setIsMouseDown] = useState(false);
+    const [algoSpeed, setAlgoSpeed] = useState<number>(10);
 
     // Selector for toolbar
     const toggleSelected = (button: string): void => {
