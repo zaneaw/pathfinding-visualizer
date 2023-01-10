@@ -86,7 +86,7 @@ const PathfindingVisualizer: React.FC = () => {
     };
 
     const animateShortestPath = (nodesInShortestPath: Node[]) => {
-        const shortestPathTiming: number = (algoSpeed < 75) ? (algoSpeed * 5) : (algoSpeed * 2);
+        const shortestPathTiming: number = (algoSpeed < 50) ? (algoSpeed * 5) : (algoSpeed * 2);
 
         setTimeout(() => {
             isAlgoRunning.current = false;
