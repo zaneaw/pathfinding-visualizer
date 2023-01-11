@@ -321,7 +321,6 @@ const PathfindingVisualizer: React.FC = () => {
                 isAlgoRunning={isAlgoRunning.current}
             />
             <div className='flex flex-col items-center justify-center'>
-                {/* Create grid display on page */}
                 {gridNodes.map((row: Node[], i: number) => {
                     const topBorder = row[0].row === 0 ? true : false;
                     const botBorder =
