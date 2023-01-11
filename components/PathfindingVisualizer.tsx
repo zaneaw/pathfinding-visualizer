@@ -21,6 +21,7 @@ interface GridSize {
     columns: number;
 }
 
+
 const PathfindingVisualizer: React.FC = () => {
     const [gridNodes, setGridNodes] = useState<Node[][]>([]);
     const [gridSize, setGridSize] = useState<GridSize>({
@@ -301,6 +302,15 @@ const PathfindingVisualizer: React.FC = () => {
 
         setGridNodes(rows);
     }, [gridSize, getNewPoints]);
+
+    // set Grid Size to take up the available space on screen when page is initially loaded
+    useEffect(() => {
+        const heightAvailable: number = window.innerWidth < 845 ? window.innerHeight - 525 : window.innerHeight - 350;
+        const numOfCols: number = Math.floor((window.innerWidth - 100) / 24);
+        const numOfRows: number = Math.floor((heightAvailable) / 24);
+
+        setGridSize({ rows: numOfRows, columns: numOfCols })
+    }, []);
 
     useEffect(() => {
         createGrid();
