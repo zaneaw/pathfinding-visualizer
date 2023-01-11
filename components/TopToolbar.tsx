@@ -35,19 +35,19 @@ const Toolbar: React.FC<Props> = ({
     isAlgoRunning,
 }) => {
     return (
-        <div className='flex flex-row items-center justify-around'>
-            <ToolbarButton 
-                handleClick={() => console.log('Algorithms clicked')} 
-                title={"Algorithms"} 
-                icon={<BsChevronDown />}
-                styles={null}
-                isAlgoRunning={null}
-            />
-
+        <div className='flex flex-row items-center justify-around flex-wrap px-2 py-4 gap-2'>
             <div className='flex flex-col items-center justify-center gap-4 mb-4 pt-4'>
                 <ToolbarButton 
+                    handleClick={() => console.log('Algorithms clicked')} 
+                    title={"Algorithms"} 
+                    icon={<BsChevronDown />}
+                    styles={null}
+                    isAlgoRunning={null}
+                    iconOnMobile={true}
+                />
+                <ToolbarButton 
                     handleClick={() => startAlgo()}
-                    title={"Run Algorithm"}
+                    title={"Visualize!"}
                     icon={null}
                     styles={null}
                     isAlgoRunning={isAlgoRunning}
