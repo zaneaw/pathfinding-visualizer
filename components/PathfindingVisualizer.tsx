@@ -32,7 +32,6 @@ const PathfindingVisualizer: React.FC = () => {
     const [algoSpeed, setAlgoSpeed] = useState<number>(10);
     const isAlgoRunning = useRef<boolean>(false);
 
-
     // Selector for toolbar
     const toggleSelected = (button: string): void => {
         if (isSelected === button) {
@@ -42,9 +41,8 @@ const PathfindingVisualizer: React.FC = () => {
         }
     };
 
-    // Start Algo
+    // Run the Algo
     const startAlgo = (): void => {
-        // run the algorithm
         resetGrid(2);
         isAlgoRunning.current = true;
         const [visitedNodes, endNode]: [Node[], Node] = dijkstras(gridNodes);
