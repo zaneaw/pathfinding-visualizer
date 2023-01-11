@@ -6,6 +6,7 @@ type Props = {
     icon: any;
     styles: any;
     isAlgoRunning: boolean | null;
+    iconOnMobile?: boolean;
 };
 
 const ToolbarButton: React.FC<Props> = ({
@@ -14,15 +15,20 @@ const ToolbarButton: React.FC<Props> = ({
     icon,
     styles,
     isAlgoRunning,
+    iconOnMobile,
 }) => {
     return (
         <button
             onClick={handleClick}
-            className={`flex flex-row justify-center items-center gap-1 py-1 px-2 text-center rounded border-2 border-slate-500 hover:cursor-pointer transition-all ease-in duration-150 ${styles} ${isAlgoRunning ? 'bg-slate-500' : 'hover:bg-green-500'}`}
+            className={`min-w-[88px] md:min-w-fit px-1 py-1 xs:px-2 xs:py-2 flex flex-row justify-center items-center md:gap-1 text-center rounded border-2 border-slate-500 hover:cursor-pointer transition-all ease-in duration-150 ${styles} ${isAlgoRunning ? 'bg-slate-500 hover:cursor-default' : 'hover:bg-green-500'}`}
             disabled={isAlgoRunning ? true : false}
         >
-            {title}
-            {icon ? icon : ''}
+            <h2 className='text-sm md:text-base'>
+                {title}
+            </h2>
+            <div className={`${iconOnMobile ? 'block' : 'hidden md:block'}`}>
+                {icon ? icon : ''}
+            </div>
         </button>
     );
 };
