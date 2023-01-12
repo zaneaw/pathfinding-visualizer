@@ -149,11 +149,9 @@ const PathfindingVisualizer: React.FC = () => {
             return;
         }
 
-        // loop over nodes to change necessary nodes
-        const nextNodes = gridNodes.map((row) => {
-            row.map((node) => {
-                // start or end is selected
-                if (varName !== 'isWall' && varName !== 'isWeight') {
+        if (varName !== 'isWall' && varName !== 'isWeight') {
+            const nextNodes = gridNodes.map((row) => {
+                row.map((node) => {
                     // if node in loop = node selected
                     // or if node is start/is end
                     // set selected node to start/end
@@ -164,25 +162,35 @@ const PathfindingVisualizer: React.FC = () => {
                         node.isWeight = false;
                         return {...node};
                     }
-                // wall is selected
-                } else if (varName === 'isWall' ) {
+                })
+                return row;
+            })
+            setGridNodes(nextNodes);
+        } else if (varName === 'isWall') {
+            const nextNodes = gridNodes.map((row) => {
+                row.map((node) => {
                     // remove or add wall to selected node
                     if (currNode.id === node.id && !node.isWeight) {
                         node.isWall = !node.isWall;
                         return { ...node };
                     }
-                } else if (varName === 'isWeight') {
+                })
+                return row;
+            })
+            setGridNodes(nextNodes);
+        } else if (varName === 'isWeight') {
+            const nextNodes = gridNodes.map((row) => {
+                row.map((node) => {
+                    // remove or add a weight to selected node
                     if (currNode.id === node.id && !node.isWall) {
                         node.isWeight === !node.isWeight;
                         return {...node};
                     }
-                }
-                return node;
-            });
-            return [...row];
-        });
-
-        setGridNodes(nextNodes);
+                })
+                return row;
+            })
+            setGridNodes(nextNodes);
+        }
     };
 
     const randomNumGen = (max: number): number => {
