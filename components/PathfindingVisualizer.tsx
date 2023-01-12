@@ -11,6 +11,7 @@ interface Node {
     isStart: boolean;
     isEnd: boolean;
     isWall: boolean;
+    isWeight: boolean;
     isVisited: boolean;
     distance: number;
     prevNode: Node | null;
@@ -291,6 +292,7 @@ const PathfindingVisualizer: React.FC = () => {
                     isStart: y === startCol && x === startRow ? true : false,
                     isEnd: y === endCol && x === endRow ? true : false,
                     isWall: false,
+                    isWeight: false,
                     isVisited: false,
                     distance: Infinity,
                     prevNode: null,

@@ -5,6 +5,7 @@ interface Node {
     isStart: boolean;
     isEnd: boolean;
     isWall: boolean;
+    isWeight: boolean;
     isVisited: boolean;
     distance: number;
     prevNode: Node | null;
