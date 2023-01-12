@@ -266,6 +266,19 @@ const PathfindingVisualizer: React.FC = () => {
                 })
 
                 setGridNodes(nextNodes)
+            } else if (action === 4) {
+                const nextNodes = gridNodes.map(row => {
+                    row.map(node => {
+                        if (node.isWeight) {
+                            node.isWeight = false;
+                            return {...node};
+                        }
+                        return node;
+                    })
+                    return [...row];
+                })
+
+                setGridNodes(nextNodes)
             }
         }
     }
