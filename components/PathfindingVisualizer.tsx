@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import TopToolbar from './TopToolbar';
+import TopToolbar from './Toolbar';
 import NodeDisplay from './NodeDisplay';
 import { dijkstras, getNodesInShortestPath } from '../algorithms/dijkstras';
 
