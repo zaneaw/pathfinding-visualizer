@@ -140,7 +140,9 @@ const PathfindingVisualizer: React.FC = () => {
                 ? 'isStart'
                 : isSelected === 'end'
                 ? 'isEnd'
-                : 'isWall';
+                : isSelected === 'isWall'
+                ? 'isWall'
+                : 'isWeight';
 
         // stop from trying to overwrite a start or end node
         if (currNode.isStart || currNode.isEnd) {
@@ -151,7 +153,7 @@ const PathfindingVisualizer: React.FC = () => {
         const nextNodes = gridNodes.map((row) => {
             row.map((node) => {
                 // start or end is selected
-                if (varName !== 'isWall') {
+                if (varName !== 'isWall' && varName !== 'isWeight') {
                     // if node in loop = node selected
                     // or if node is start/is end
                     // set selected node to start/end
@@ -159,14 +161,20 @@ const PathfindingVisualizer: React.FC = () => {
                     if ((currNode.id === node.id && !node[varName]) || node[varName]) {
                         node[varName] = !node[varName];
                         node.isWall = false;
+                        node.isWeight = false;
                         return {...node};
                     }
                 // wall is selected
                 } else if (varName === 'isWall' ) {
                     // remove or add wall to selected node
-                    if (currNode.id === node.id) {
+                    if (currNode.id === node.id && !node.isWeight) {
                         node.isWall = !node.isWall;
                         return { ...node };
+                    }
+                } else if (varName === 'isWeight') {
+                    if (currNode.id === node.id && !node.isWall) {
+                        node.isWeight === !node.isWeight;
+                        return {...node};
                     }
                 }
                 return node;
