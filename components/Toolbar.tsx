@@ -89,16 +89,6 @@ const Toolbar: React.FC<Props> = ({
 
             <ToolbarSection>
                 <ToolbarButton 
-                    handleClick={() => resetGrid(3)}
-                    title={"Reset Walls"}
-                    isAlgoRunning={isAlgoRunning}
-                />
-                <ToolbarButton 
-                    handleClick={() => resetGrid(4)}
-                    title={"Reset Weights"}
-                    isAlgoRunning={isAlgoRunning}
-                />
-                <ToolbarButton 
                     handleClick={() => resetGrid(2)}
                     title={"Reset Results"}
                     isAlgoRunning={isAlgoRunning}
@@ -109,6 +99,16 @@ const Toolbar: React.FC<Props> = ({
                         resetGrid(3)
                     }}
                     title={"Reset Grid"}
+                    isAlgoRunning={isAlgoRunning}
+                />
+                <ToolbarButton 
+                    handleClick={() => resetGrid(3)}
+                    title={"Reset Walls"}
+                    isAlgoRunning={isAlgoRunning}
+                />
+                <ToolbarButton 
+                    handleClick={() => resetGrid(4)}
+                    title={"Reset Weights"}
                     isAlgoRunning={isAlgoRunning}
                 />
             </ToolbarSection>
