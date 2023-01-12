@@ -350,6 +350,38 @@ const PathfindingVisualizer: React.FC = () => {
         createGrid();
     }, [createGrid]);
 
+    const gridDisplay = gridNodes.map((row: Node[], i: number) => {
+        const topBorder = row[0].row === 0 ? true : false;
+        const botBorder =
+            row[0].row === gridNodes.length - 1 ? true : false;
+        return (
+            <div
+                key={i}
+                className='flex flex-row items-center justify-center'
+            >
+                {row.map((node: Node) => {
+                    const leftBorder =
+                        node.col === 0 ? true : false;
+                    const rightBorder =
+                        node.col === row.length - 1 ? true : false;
+                    return (
+                        <NodeDisplay
+                            key={node.id}
+                            node={node}
+                            handleMouseDown={handleMouseDown}
+                            handleMouseEnter={handleMouseEnter}
+                            handleMouseUp={handleMouseUp}
+                            topBorder={topBorder}
+                            botBorder={botBorder}
+                            leftBorder={leftBorder}
+                            rightBorder={rightBorder}
+                        />
+                    );
+                })}
+            </div>
+        );
+    })
+
     return (
         <div className='min-h-screen pb-12 bg-[cornflowerblue]'>
             <Toolbar
@@ -366,37 +398,7 @@ const PathfindingVisualizer: React.FC = () => {
             />
             <GridKeyToolbar />
             <div className='flex flex-col items-center justify-center'>
-                {gridNodes.map((row: Node[], i: number) => {
-                    const topBorder = row[0].row === 0 ? true : false;
-                    const botBorder =
-                        row[0].row === gridNodes.length - 1 ? true : false;
-                    return (
-                        <div
-                            key={i}
-                            className='flex flex-row items-center justify-center'
-                        >
-                            {row.map((node: Node) => {
-                                const leftBorder =
-                                    node.col === 0 ? true : false;
-                                const rightBorder =
-                                    node.col === row.length - 1 ? true : false;
-                                return (
-                                    <NodeDisplay
-                                        key={node.id}
-                                        node={node}
-                                        handleMouseDown={handleMouseDown}
-                                        handleMouseEnter={handleMouseEnter}
-                                        handleMouseUp={handleMouseUp}
-                                        topBorder={topBorder}
-                                        botBorder={botBorder}
-                                        leftBorder={leftBorder}
-                                        rightBorder={rightBorder}
-                                    />
-                                );
-                            })}
-                        </div>
-                    );
-                })}
+                {gridDisplay}
             </div>
         </div>
     );
