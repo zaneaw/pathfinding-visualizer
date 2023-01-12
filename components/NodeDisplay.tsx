@@ -51,7 +51,6 @@ const NodeDisplay: React.FC<Props> = ({
             ${node.isStart ? 'bg-green-500' : ''}
             ${node.isEnd ? 'bg-red-500' : ''}
             ${node.isWall ? 'bg-gray-500' : ''}
-            ${node.isWeight ? 'bg-blue-500' : ''}
             ${node.customStyles}`}
         >
             {node.isStart ? (

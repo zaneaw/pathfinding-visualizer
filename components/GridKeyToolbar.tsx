@@ -10,7 +10,7 @@ const GridKeyToolbar = () => {
             <GridKeyOption keyName="Start" keyStyles="bg-green-500" KeyIcon={FiMapPin} />
             <GridKeyOption keyName="End" keyStyles="bg-red-500" KeyIcon={GiFinishLine} />
             <GridKeyOption keyName="Wall" keyStyles="bg-slate-500" KeyIcon={GiStoneWall} />
-            <GridKeyOption keyName="Weighted" keyStyles="bg-blue-500" KeyIcon={GiWeight} />
+            <GridKeyOption keyName="Weighted" KeyIcon={GiWeight} />
             <GridKeyOption keyName="Visited" keyStyles="bg-purple-500" />
             <GridKeyOption keyName="Shortest Path" keyStyles="bg-yellow-500" />
         </div>
