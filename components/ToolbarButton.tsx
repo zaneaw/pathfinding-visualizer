@@ -3,16 +3,16 @@ import React from 'react';
 type Props = {
     handleClick: () => void;
     title: string;
-    icon: any;
-    styles: any;
-    isAlgoRunning: boolean | null;
+    Icon?: React.ElementType;
+    styles?: string;
+    isAlgoRunning?: boolean;
     iconOnMobile?: boolean;
 };
 
 const ToolbarButton: React.FC<Props> = ({
     handleClick,
     title,
-    icon,
+    Icon,
     styles,
     isAlgoRunning,
     iconOnMobile,
@@ -27,7 +27,7 @@ const ToolbarButton: React.FC<Props> = ({
                 {title}
             </h2>
             <div className={`${iconOnMobile ? 'block' : 'hidden md:block'}`}>
-                {icon ? icon : ''}
+                {Icon ? <Icon /> : ''}
             </div>
         </button>
     );
