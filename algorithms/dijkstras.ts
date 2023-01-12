@@ -26,6 +26,7 @@ export const dijkstras = (grid: Node[][]): [Node[], Node] => {
             continue;
         }
 
+        // in an endless loop, break out - not possible to get to end point
         if (closestNode.distance === Infinity) {
             break;
         }
@@ -67,8 +68,12 @@ const updateUnvisitedNeighbors = (node: Node, grid: Node[][]) => {
     const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
 
     for (const neighbor of unvisitedNeighbors) {
-        neighbor.distance = node.distance + 1;
-        neighbor.prevNode = node;
+        const tempDistance = node.distance + (neighbor.isWeight ? 1 : 0);
+
+        if (tempDistance < neighbor.distance) {
+            neighbor.distance = tempDistance + 1;
+            neighbor.prevNode = node;
+        }
     }
 }
 
