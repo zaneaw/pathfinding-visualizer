@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Toolbar from './Toolbar';
 import NodeDisplay from './NodeDisplay';
 import { dijkstras, getNodesInShortestPath } from '../algorithms/dijkstras';
+import GridKeyToolbar from './GridKeyToolbar';
 
 interface Node {
     id: number;
@@ -330,6 +331,7 @@ const PathfindingVisualizer: React.FC = () => {
                 handleAlgoSpeedChange={handleAlgoSpeedChange}
                 isAlgoRunning={isAlgoRunning.current}
             />
+            <GridKeyToolbar />
             <div className='flex flex-col items-center justify-center'>
                 {gridNodes.map((row: Node[], i: number) => {
                     const topBorder = row[0].row === 0 ? true : false;
