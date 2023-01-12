@@ -52,7 +52,15 @@ const NodeDisplay: React.FC<Props> = ({
             ${node.isWall ? 'bg-gray-500' : ''}
             ${node.customStyles}`}
         >
-            {node.isStart ? <FiMapPin /> : node.isEnd ? <GiFinishLine /> : ''}
+            {node.isStart ? (
+                <FiMapPin className='transition-all ease-in duration-150' />
+            ) : node.isEnd ? (
+                <GiFinishLine className='transition-all ease-in duration-150' />
+            ) : node.isWall ? (
+                <GiStoneWall className='transition-all ease-in duration-150 pointer-events-none' />
+            ) : (
+                ''
+            )}
         </div>
     );
 };
