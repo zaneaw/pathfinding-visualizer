@@ -140,7 +140,7 @@ const PathfindingVisualizer: React.FC = () => {
                 ? 'isStart'
                 : isSelected === 'end'
                 ? 'isEnd'
-                : isSelected === 'isWall'
+                : isSelected === 'wall'
                 ? 'isWall'
                 : 'isWeight';
 
