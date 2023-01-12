@@ -78,12 +78,24 @@ const Toolbar: React.FC<Props> = ({
                     styles={isSelected === 'wall' ? 'bg-gray-500' : ''}
                     isAlgoRunning={isAlgoRunning}
                 />
+                <ToolbarButton 
+                    handleClick={() => toggleSelected('weight')}
+                    title={"Add Weights"}
+                    Icon={GiStoneWall}
+                    styles={isSelected === 'weight' ? 'bg-blue-500' : ''}
+                    isAlgoRunning={isAlgoRunning}
+                />
             </ToolbarSection>
 
             <ToolbarSection>
                 <ToolbarButton 
                     handleClick={() => resetGrid(3)}
                     title={"Reset Walls"}
+                    isAlgoRunning={isAlgoRunning}
+                />
+                <ToolbarButton 
+                    handleClick={() => resetGrid(4)}
+                    title={"Reset Weights"}
                     isAlgoRunning={isAlgoRunning}
                 />
                 <ToolbarButton 
