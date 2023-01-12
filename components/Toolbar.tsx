@@ -1,7 +1,6 @@
 import React from 'react';
 import ToolbarButton from './ToolbarButton';
 import ToolbarSection from './ToolbarSection';
-import GridKeyToolbar from './GridKeyToolbar';
 import { FiMapPin } from 'react-icons/fi';
 import { GiFinishLine, GiStoneWall } from 'react-icons/gi';
 import { BsChevronDown } from 'react-icons/bs';
@@ -37,21 +36,22 @@ const Toolbar: React.FC<Props> = ({
     isAlgoRunning,
 }) => {
     return (
-        <div className='flex flex-row items-center justify-around flex-wrap px-2 py-4 gap-2'>
+        <div className='flex flex-row items-center justify-around flex-wrap px-2 pt-2 gap-2'>
             <ToolbarSection>
                 <ToolbarButton 
                     handleClick={() => console.log('Algorithms clicked')} 
                     title={"Algorithms"} 
-                    icon={<BsChevronDown />}
-                    styles={null}
-                    isAlgoRunning={null}
+                    Icon={BsChevronDown}
                     iconOnMobile={true}
                 />
                 <ToolbarButton 
                     handleClick={() => startAlgo()}
                     title={"Visualize!"}
-                    icon={null}
-                    styles={null}
+                    isAlgoRunning={isAlgoRunning}
+                />
+                <ToolbarButton 
+                    handleClick={() => resetGrid(1)}
+                    title={"Randomize Start and End"}
                     isAlgoRunning={isAlgoRunning}
                 />
             </ToolbarSection>
@@ -60,21 +60,21 @@ const Toolbar: React.FC<Props> = ({
                 <ToolbarButton 
                     handleClick={() => toggleSelected('start')}
                     title={"Choose Start"}
-                    icon={<FiMapPin />}
+                    Icon={FiMapPin}
                     styles={isSelected === 'start' ? 'bg-gray-500' : ''}
                     isAlgoRunning={isAlgoRunning}
                 />
                 <ToolbarButton 
                     handleClick={() => toggleSelected('end')}
                     title={"Choose End"}
-                    icon={<GiFinishLine />}
+                    Icon={GiFinishLine}
                     styles={isSelected === 'end' ? 'bg-gray-500' : ''}
                     isAlgoRunning={isAlgoRunning}
                 />
                 <ToolbarButton 
                     handleClick={() => toggleSelected('wall')}
                     title={"Build Walls"}
-                    icon={<GiStoneWall />}
+                    Icon={GiStoneWall}
                     styles={isSelected === 'wall' ? 'bg-gray-500' : ''}
                     isAlgoRunning={isAlgoRunning}
                 />
@@ -82,24 +82,13 @@ const Toolbar: React.FC<Props> = ({
 
             <ToolbarSection>
                 <ToolbarButton 
-                    handleClick={() => resetGrid(1)}
-                    title={"Randomize Start and End"}
-                    icon={null}
-                    styles={null}
-                    isAlgoRunning={isAlgoRunning}
-                />
-                <ToolbarButton 
                     handleClick={() => resetGrid(3)}
                     title={"Reset Walls"}
-                    icon={null}
-                    styles={null}
                     isAlgoRunning={isAlgoRunning}
                 />
                 <ToolbarButton 
                     handleClick={() => resetGrid(2)}
                     title={"Reset Results"}
-                    icon={null}
-                    styles={null}
                     isAlgoRunning={isAlgoRunning}
                 />
                 <ToolbarButton 
@@ -108,8 +97,6 @@ const Toolbar: React.FC<Props> = ({
                         resetGrid(3)
                     }}
                     title={"Reset Grid"}
-                    icon={null}
-                    styles={null}
                     isAlgoRunning={isAlgoRunning}
                 />
             </ToolbarSection>
@@ -139,12 +126,7 @@ const Toolbar: React.FC<Props> = ({
                     Modify Algorithm Speed:
                 </p>
                 <input id="columns-input" type="range" min="5" max="200" step="5" value={algoSpeed} onChange={handleAlgoSpeedChange} disabled={isAlgoRunning ? true : false} />
-            </ToolbarSection>
-
-            <ToolbarSection>
-                <GridKeyToolbar />
-            </ToolbarSection>
-            
+            </ToolbarSection>            
         </div>
     );
 };
