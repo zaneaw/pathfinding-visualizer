@@ -149,7 +149,7 @@ const PathfindingVisualizer: React.FC = () => {
             return;
         }
 
-        if (varName !== 'isWall' && varName !== 'isWeight') {
+        if (varName === 'isStart' || varName === 'isEnd') {
             const nextNodes = gridNodes.map((row) => {
                 row.map((node) => {
                     // if node in loop = node selected
@@ -172,7 +172,7 @@ const PathfindingVisualizer: React.FC = () => {
                     // remove or add wall to selected node
                     if (currNode.id === node.id && !node.isWeight) {
                         node.isWall = !node.isWall;
-                        return { ...node };
+                        return {...node};
                     }
                 })
                 return row;
@@ -183,7 +183,7 @@ const PathfindingVisualizer: React.FC = () => {
                 row.map((node) => {
                     // remove or add a weight to selected node
                     if (currNode.id === node.id && !node.isWall) {
-                        node.isWeight === !node.isWeight;
+                        node.isWeight = !node.isWeight;
                         return {...node};
                     }
                 })
@@ -237,6 +237,7 @@ const PathfindingVisualizer: React.FC = () => {
                         if (node.col === startCol && node.row === startRow) {
                             node.isStart = true;
                             node.isWall = false;
+                            node.isWeight = false;
                             return {...node};
                         } else if (node.isStart && (node.col !== startCol || node.row !== startRow)) {
                             node.isStart = false;
@@ -245,6 +246,7 @@ const PathfindingVisualizer: React.FC = () => {
                         if (node.col === endCol && node.row === endRow) {
                             node.isEnd = true;
                             node.isWall = false;
+                            node.isWeight = false;
                             return {...node};
                         } else if (node.isEnd && (node.col !== endCol || node.row !== endRow)) {
                             node.isEnd = false;
@@ -282,7 +284,7 @@ const PathfindingVisualizer: React.FC = () => {
                 })
 
                 setGridNodes(nextNodes)
-            } else if (action === 4) {
+            } else if (action === 4) { // reset weights only
                 const nextNodes = gridNodes.map(row => {
                     row.map(node => {
                         if (node.isWeight) {
