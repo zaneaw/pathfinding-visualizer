@@ -97,6 +97,7 @@ const Toolbar: React.FC<Props> = ({
                     handleClick={() => {
                         resetGrid(2) 
                         resetGrid(3)
+                        resetGrid(4)
                     }}
                     title={"Reset Grid"}
                     isAlgoRunning={isAlgoRunning}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FiMapPin } from 'react-icons/fi';
-import { GiFinishLine, GiStoneWall } from 'react-icons/gi';
+import { GiFinishLine, GiStoneWall, GiWeight } from 'react-icons/gi';
 
 interface Node {
     id: number;
@@ -51,6 +51,7 @@ const NodeDisplay: React.FC<Props> = ({
             ${node.isStart ? 'bg-green-500' : ''}
             ${node.isEnd ? 'bg-red-500' : ''}
             ${node.isWall ? 'bg-gray-500' : ''}
+            ${node.isWeight ? 'bg-blue-500' : ''}
             ${node.customStyles}`}
         >
             {node.isStart ? (
@@ -59,6 +60,8 @@ const NodeDisplay: React.FC<Props> = ({
                 <GiFinishLine className='transition-all ease-in duration-150' />
             ) : node.isWall ? (
                 <GiStoneWall className='transition-all ease-in duration-150 pointer-events-none' />
+            ) : node.isWeight ? (
+                <GiWeight className='transition-all ease-in duration-150 pointer-events-none' />
             ) : (
                 ''
             )}
