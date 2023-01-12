@@ -6,7 +6,7 @@ interface Props {
 
 const ToolbarSection: React.FC<Props> = (props) => {
     return (
-        <div className='flex flex-col items-center justify-center gap-4 mb-4 pt-4'>
+        <div className='flex flex-col items-center justify-center gap-4 mb-4'>
             {props.children}
         </div>
     );
