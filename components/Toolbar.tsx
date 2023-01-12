@@ -2,7 +2,7 @@ import React from 'react';
 import ToolbarButton from './ToolbarButton';
 import ToolbarSection from './ToolbarSection';
 import { FiMapPin } from 'react-icons/fi';
-import { GiFinishLine, GiStoneWall } from 'react-icons/gi';
+import { GiFinishLine, GiStoneWall, GiWeight } from 'react-icons/gi';
 import { BsChevronDown } from 'react-icons/bs';
 
 interface GridSize {
@@ -80,8 +80,8 @@ const Toolbar: React.FC<Props> = ({
                 />
                 <ToolbarButton 
                     handleClick={() => toggleSelected('weight')}
-                    title={"Add Weights"}
-                    Icon={GiStoneWall}
+                    title={"Build Weights"}
+                    Icon={GiWeight}
                     styles={isSelected === 'weight' ? 'bg-blue-500' : ''}
                     isAlgoRunning={isAlgoRunning}
                 />
