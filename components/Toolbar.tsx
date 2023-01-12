@@ -82,17 +82,12 @@ const Toolbar: React.FC<Props> = ({
                     handleClick={() => toggleSelected('weight')}
                     title={"Build Weights"}
                     Icon={GiWeight}
-                    styles={isSelected === 'weight' ? 'bg-blue-500' : ''}
+                    styles={isSelected === 'weight' ? 'bg-gray-500' : ''}
                     isAlgoRunning={isAlgoRunning}
                 />
             </ToolbarSection>
 
             <ToolbarSection>
-                <ToolbarButton 
-                    handleClick={() => resetGrid(2)}
-                    title={"Reset Results"}
-                    isAlgoRunning={isAlgoRunning}
-                />
                 <ToolbarButton 
                     handleClick={() => {
                         resetGrid(2) 
@@ -100,6 +95,11 @@ const Toolbar: React.FC<Props> = ({
                         resetGrid(4)
                     }}
                     title={"Reset Grid"}
+                    isAlgoRunning={isAlgoRunning}
+                />
+                <ToolbarButton 
+                    handleClick={() => resetGrid(2)}
+                    title={"Reset Results"}
                     isAlgoRunning={isAlgoRunning}
                 />
                 <ToolbarButton 
