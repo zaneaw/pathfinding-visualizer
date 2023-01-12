@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import TopToolbar from './Toolbar';
+import Toolbar from './Toolbar';
 import NodeDisplay from './NodeDisplay';
 import { dijkstras, getNodesInShortestPath } from '../algorithms/dijkstras';
 
@@ -318,7 +318,7 @@ const PathfindingVisualizer: React.FC = () => {
 
     return (
         <div className='min-h-screen pb-12 bg-[cornflowerblue]'>
-            <TopToolbar
+            <Toolbar
                 isSelected={isSelected}
                 toggleSelected={toggleSelected}
                 startAlgo={startAlgo}
