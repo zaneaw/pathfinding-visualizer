@@ -17,4 +17,4 @@ const GridKeyToolbar = () => {
     );
 };
 
-export default GridKeyToolbar;
+export default React.memo(GridKeyToolbar);
