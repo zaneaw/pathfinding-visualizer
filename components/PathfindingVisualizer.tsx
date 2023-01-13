@@ -388,7 +388,6 @@ const PathfindingVisualizer: React.FC = () => {
                 isSelected={isSelected}
                 toggleSelected={toggleSelected}
                 startAlgo={startAlgo}
-                createGrid={createGrid}
                 resetGrid={resetGrid}
                 gridSize={gridSize}
                 handleGridSizeChange={handleGridSizeChange}

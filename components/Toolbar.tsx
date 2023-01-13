@@ -14,7 +14,6 @@ interface Props {
     isSelected: string;
     toggleSelected: (button: string) => void;
     startAlgo: () => void;
-    createGrid: () => void;
     resetGrid: (action: number) => void;
     gridSize: GridSize;
     handleGridSizeChange: (e: any) => void;
@@ -27,7 +26,6 @@ const Toolbar: React.FC<Props> = ({
     isSelected,
     toggleSelected,
     startAlgo,
-    createGrid,
     resetGrid,
     gridSize,
     handleGridSizeChange,
