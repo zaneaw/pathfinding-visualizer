@@ -226,7 +226,7 @@ const PathfindingVisualizer: React.FC = () => {
         setAlgoSpeed(e.target.value);
     }
 
-    const resetGrid = (action?: number): void => {
+    const resetGrid = (action: number): void => {
         if (action) {
             if (action === 1) { // randomize start and end points
                 // set random start and end points on grid based on grid size
